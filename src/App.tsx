@@ -27,6 +27,9 @@ import { ProfilesView } from './components/ProfilesView';
 import { RulesModal } from './components/RulesModal';
 import { MoreGamesModal } from './components/MoreGamesModal';
 import { VictoryModal } from './components/VictoryModal';
+import { SorteoModal } from './components/SorteoModal';
+import { TurnTimerModal } from './components/TurnTimerModal';
+import { FloatingTimerWidget } from './components/FloatingTimerWidget';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { OrosIcon, CopasIcon, EspadasIcon, BastosIcon } from './components/SpanishDeckIcons';
 
@@ -36,6 +39,62 @@ export default function App() {
   const [rulesOpen, setRulesOpen] = useState(false);
   const [rulesTab, setRulesTab] = useState<GameType>('escoba');
   const [moreGamesOpen, setMoreGamesOpen] = useState(false);
+  const [sorteoOpen, setSorteoOpen] = useState(false);
+  const [timerOpen, setTimerOpen] = useState(false);
+
+  // Turn Timer & Wake Lock State
+  const [timerDuration, setTimerDuration] = useState(60);
+  const [timerTimeLeft, setTimerTimeLeft] = useState(60);
+  const [timerIsRunning, setTimerIsRunning] = useState(false);
+  const [wakeLockActive, setWakeLockActive] = useState(false);
+  const wakeLockSentinelRef = useState<{ release?: () => Promise<void> } | null>(null);
+
+  // Timer Tick Interval
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+    if (timerIsRunning && timerTimeLeft > 0) {
+      interval = setInterval(() => {
+        setTimerTimeLeft((prev) => {
+          if (prev <= 1) {
+            sounds.playTimerEnd();
+            return 0;
+          }
+          if (prev <= 6 && prev > 1) {
+            sounds.playTimerTick();
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else if (timerTimeLeft === 0 && timerIsRunning) {
+      setTimerIsRunning(false);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [timerIsRunning, timerTimeLeft]);
+
+  // Screen Wake Lock Toggle
+  const handleToggleWakeLock = async () => {
+    if (typeof navigator !== 'undefined' && 'wakeLock' in navigator) {
+      if (!wakeLockActive) {
+        try {
+          const sentinel = await (navigator as unknown as { wakeLock: { request: (type: string) => Promise<{ release: () => Promise<void> }> } }).wakeLock.request('screen');
+          wakeLockSentinelRef[1](sentinel);
+          setWakeLockActive(true);
+        } catch {
+          // Fallback or permission rejection
+        }
+      } else {
+        if (wakeLockSentinelRef[0]?.release) {
+          await wakeLockSentinelRef[0].release();
+          wakeLockSentinelRef[1](null);
+        }
+        setWakeLockActive(false);
+      }
+    } else {
+      setWakeLockActive(!wakeLockActive);
+    }
+  };
 
   const handleOpenRules = (tab?: GameType) => {
     setRulesTab(tab || (currentGame === 'perfiles' ? 'escoba' : currentGame));
@@ -198,6 +257,89 @@ export default function App() {
     }
   };
 
+  // Get active players list for Sorteo
+  const getCurrentPlayersList = (): { id: string; name: string }[] => {
+    if (currentGame === 'escoba') {
+      return escobaGame.players;
+    } else if (currentGame === 'mus') {
+      return [
+        { id: 'p1', name: musGame.pareja1.name },
+        { id: 'p2', name: musGame.pareja2.name },
+      ];
+    } else if (currentGame === 'chinchon') {
+      return chinchonGame.players.map((p) => ({ id: p.id, name: p.name }));
+    } else if (currentGame === 'tute') {
+      return [
+        { id: 'tA', name: tuteGame.teamA.name },
+        { id: 'tB', name: tuteGame.teamB.name },
+      ];
+    } else if (currentGame === 'libre') {
+      return libreGame.players.map((p) => ({ id: p.id, name: p.name }));
+    }
+    return profiles.slice(0, 4).map((p) => ({ id: p.id, name: p.name }));
+  };
+
+  // Sorteo Handlers
+  const handleSetManoPlayer = (playerName: string) => {
+    if (currentGame === 'escoba') {
+      const idx = escobaGame.players.findIndex((p) => p.name.toLowerCase() === playerName.toLowerCase());
+      if (idx !== -1) {
+        setEscobaGame((prev) => ({ ...prev, manoIndex: idx }));
+      }
+    } else if (currentGame === 'mus') {
+      if (musGame.pareja1.name.toLowerCase().includes(playerName.toLowerCase())) {
+        setMusGame((prev) => ({ ...prev, manoIndex: 0 }));
+      } else if (musGame.pareja2.name.toLowerCase().includes(playerName.toLowerCase())) {
+        setMusGame((prev) => ({ ...prev, manoIndex: 1 }));
+      }
+    } else if (currentGame === 'chinchon') {
+      const idx = chinchonGame.players.findIndex((p) => p.name.toLowerCase() === playerName.toLowerCase());
+      if (idx !== -1) {
+        setChinchonGame((prev) => ({ ...prev, dealerIndex: idx }));
+      }
+    }
+  };
+
+  const handleSetParejas = (pareja1: string, pareja2: string) => {
+    if (currentGame === 'mus') {
+      setMusGame((prev) => ({
+        ...prev,
+        pareja1: { ...prev.pareja1, name: pareja1 },
+        pareja2: { ...prev.pareja2, name: pareja2 },
+      }));
+    } else if (currentGame === 'tute') {
+      setTuteGame((prev) => ({
+        ...prev,
+        teamA: { ...prev.teamA, name: pareja1 },
+        teamB: { ...prev.teamB, name: pareja2 },
+      }));
+    }
+  };
+
+  // Generate shareable score summary text
+  const getGameSummaryText = (): string => {
+    if (currentGame === 'escoba') {
+      const scores = escobaGame.players.map((p) => {
+        const tot = escobaGame.rounds.reduce((acc, r) => acc + (r.scores[p.id]?.totalRound || 0), 0);
+        return `${p.name}: ${tot} pts`;
+      }).join(' | ');
+      return `🃏 CartasRC - Escoba del 15 (Meta: ${escobaGame.targetPoints} pts)\n${scores}`;
+    } else if (currentGame === 'mus') {
+      return `🃏 CartasRC - Mus\n${musGame.pareja1.name}: ${musGame.piedrasP1} piedras (${musGame.juegosGanadosP1} chicos, ${musGame.vacasGanadasP1} vacas)\n${musGame.pareja2.name}: ${musGame.piedrasP2} piedras (${musGame.juegosGanadosP2} chicos, ${musGame.vacasGanadasP2} vacas)`;
+    } else if (currentGame === 'chinchon') {
+      const scores = chinchonGame.players.map((p) => `${p.name}: ${p.totalScore} pts`).join(' | ');
+      return `🃏 CartasRC - Chinchón (límite ${chinchonGame.maxPoints} pts, Ronda ${chinchonGame.roundNumber})\n${scores}`;
+    } else if (currentGame === 'tute') {
+      const totA = tuteGame.rounds.reduce((acc, r) => acc + (r.scores['teamA']?.totalRound || 0), 0);
+      const totB = tuteGame.rounds.reduce((acc, r) => acc + (r.scores['teamB']?.totalRound || 0), 0);
+      return `🃏 CartasRC - Tute\n${tuteGame.teamA.name}: ${totA} pts | ${tuteGame.teamB.name}: ${totB} pts (Meta: ${tuteGame.targetPoints})`;
+    } else if (currentGame === 'libre') {
+      const scores = libreGame.players.map((p) => `${p.name}: ${p.score}`).join(' | ');
+      return `🃏 CartasRC - ${libreGame.title || 'Mesa Libre'}\n${scores}`;
+    }
+    return '🃏 CartasRC - Anotador de Baraja Española';
+  };
+
   return (
     <div className="min-h-screen bg-tapete text-slate-100 flex flex-col antialiased selection:bg-amber-500/30 selection:text-amber-200">
       {/* Top Bar Contract (Section 2) */}
@@ -207,6 +349,16 @@ export default function App() {
         soundEnabled={soundEnabled}
         onToggleSound={handleToggleSound}
         onOpenRules={() => handleOpenRules(currentGame)}
+        onOpenSorteo={() => {
+          sounds.playCardFlick();
+          setSorteoOpen(true);
+        }}
+        onOpenTimer={() => {
+          sounds.playCardFlick();
+          setTimerOpen(true);
+        }}
+        timerRunning={timerIsRunning}
+        timeLeft={timerTimeLeft}
         onOpenMoreGames={handleOpenMoreGames}
       />
 
@@ -337,12 +489,53 @@ export default function App() {
           <BastosIcon className="w-4 h-4 opacity-40 hover:opacity-80 transition-opacity" />
         </div>
         <p className="font-deck text-[11px] text-amber-200/60">
-          El Tantador Español · Anotador clásico de cartas para baraja española
+          CartasRC · Anotador clásico de cartas para baraja española
         </p>
       </footer>
 
+      {/* Floating Timer Widget on Table (active when timer running or not full) */}
+      {timerIsRunning && (
+        <FloatingTimerWidget
+          timeLeft={timerTimeLeft}
+          duration={timerDuration}
+          isRunning={timerIsRunning}
+          onTogglePlay={() => setTimerIsRunning(!timerIsRunning)}
+          onNextTurn={() => {
+            sounds.playCardFlick();
+            setTimerTimeLeft(timerDuration);
+            setTimerIsRunning(true);
+          }}
+          onOpenModal={() => setTimerOpen(true)}
+        />
+      )}
+
       {/* Mobile Fixed Bottom Navigation Bar */}
       <MobileBottomNav currentGame={currentGame} onSelectGame={handleSelectGame} />
+
+      {/* Sorteo de Mesa Modal */}
+      <SorteoModal
+        isOpen={sorteoOpen}
+        onClose={() => setSorteoOpen(false)}
+        currentPlayers={getCurrentPlayersList()}
+        profiles={profiles}
+        onSetManoPlayer={handleSetManoPlayer}
+        onSetParejas={handleSetParejas}
+      />
+
+      {/* Reloj de Turno / Temporizador Modal */}
+      <TurnTimerModal
+        isOpen={timerOpen}
+        onClose={() => setTimerOpen(false)}
+        timeLeft={timerTimeLeft}
+        setTimeLeft={setTimerTimeLeft}
+        isRunning={timerIsRunning}
+        setIsRunning={setTimerIsRunning}
+        duration={timerDuration}
+        setDuration={setTimerDuration}
+        wakeLockActive={wakeLockActive}
+        onToggleWakeLock={handleToggleWakeLock}
+        gameSummaryText={getGameSummaryText()}
+      />
 
       {/* Rules Modal */}
       <RulesModal
