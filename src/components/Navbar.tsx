@@ -77,7 +77,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             onClick={onToggleSound}
             title={soundEnabled ? 'Silenciar sonidos' : 'Activar sonidos'}
-            className="min-h-[36px] min-w-[36px] sm:min-h-[38px] sm:min-w-[38px] flex items-center justify-center p-1.5 text-emerald-200/80 hover:text-amber-300 hover:bg-emerald-900/40 rounded-lg transition-colors cursor-pointer"
+            className="min-h-[36px] min-w-[36px] flex items-center justify-center p-1.5 text-emerald-200/80 hover:text-amber-300 hover:bg-emerald-900/40 rounded-lg transition-colors cursor-pointer"
             aria-label="Alternar sonido"
           >
             {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4 text-slate-400" />}
@@ -86,7 +86,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Reloj de Turno / Mesa */}
           <button
             onClick={onOpenTimer}
-            className={`min-h-[36px] sm:min-h-[38px] flex items-center gap-1 px-2 sm:px-2.5 py-1.5 text-[11px] sm:text-xs font-semibold rounded-lg transition-all whitespace-nowrap cursor-pointer ${
+            className={`min-h-[36px] min-w-[36px] sm:min-w-0 flex items-center justify-center gap-1 px-2 sm:px-2.5 py-1.5 text-[11px] sm:text-xs font-semibold rounded-lg transition-all whitespace-nowrap cursor-pointer ${
               timerRunning
                 ? 'bg-amber-500/25 text-amber-300 border border-amber-400/60 shadow animate-pulse'
                 : 'text-emerald-200 bg-[#092b19] hover:bg-[#0f4427] hover:text-amber-100 border border-amber-500/30'
@@ -103,17 +103,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Sorteo de Mesa */}
           <button
             onClick={onOpenSorteo}
-            className="min-h-[36px] sm:min-h-[38px] flex items-center gap-1 px-2 sm:px-2.5 py-1.5 text-[11px] sm:text-xs font-semibold rounded-lg transition-all whitespace-nowrap cursor-pointer text-amber-200 bg-[#092b19] hover:bg-[#0f4427] hover:text-amber-100 border border-amber-500/40"
+            className="min-h-[36px] min-w-[36px] sm:min-w-0 flex items-center justify-center gap-1 px-2 sm:px-2.5 py-1.5 text-[11px] sm:text-xs font-semibold rounded-lg transition-all whitespace-nowrap cursor-pointer text-amber-200 bg-[#092b19] hover:bg-[#0f4427] hover:text-amber-100 border border-amber-500/40"
             title="Sorteo de mano, cartas, moneda y dados"
           >
             <Shuffle className="w-3.5 h-3.5 text-amber-300" />
-            <span className="hidden xs:inline">Sorteo</span>
+            <span className="hidden sm:inline">Sorteo</span>
           </button>
 
           {/* Perfiles */}
           <button
             onClick={() => onSelectGame('perfiles')}
-            className={`min-h-[36px] sm:min-h-[38px] flex items-center gap-1 px-2 sm:px-2.5 py-1.5 text-[11px] sm:text-xs font-semibold rounded-lg transition-all whitespace-nowrap shadow-sm cursor-pointer ${
+            className={`min-h-[36px] min-w-[36px] sm:min-w-0 flex items-center justify-center gap-1 px-2 sm:px-2.5 py-1.5 text-[11px] sm:text-xs font-semibold rounded-lg transition-all whitespace-nowrap shadow-sm cursor-pointer ${
               currentGame === 'perfiles'
                 ? 'bg-amber-400 text-amber-950 font-bold shadow'
                 : 'text-amber-200 bg-[#092b19] hover:bg-[#0f4427] hover:text-amber-100 border border-amber-500/40'
@@ -127,11 +127,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Botón de Reglas */}
           <button
             onClick={onOpenRules}
-            className="min-h-[36px] sm:min-h-[38px] flex items-center gap-1 px-2 sm:px-2.5 py-1.5 text-[11px] sm:text-xs font-semibold text-amber-950 bg-amber-400 hover:bg-amber-300 rounded-lg transition-colors whitespace-nowrap shadow-sm cursor-pointer"
+            className="min-h-[36px] min-w-[36px] sm:min-w-0 flex items-center justify-center gap-1 px-2 sm:px-2.5 py-1.5 text-[11px] sm:text-xs font-semibold text-amber-950 bg-amber-400 hover:bg-amber-300 rounded-lg transition-colors whitespace-nowrap shadow-sm cursor-pointer"
             title="Ver reglamento oficial"
           >
             <BookOpen className="w-3.5 h-3.5 shrink-0" />
-            <span>Reglas</span>
+            <span className="hidden sm:inline">Reglas</span>
           </button>
         </div>
       </div>

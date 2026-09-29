@@ -30,6 +30,7 @@ import { VictoryModal } from './components/VictoryModal';
 import { SorteoModal } from './components/SorteoModal';
 import { TurnTimerModal } from './components/TurnTimerModal';
 import { FloatingTimerWidget } from './components/FloatingTimerWidget';
+import { PWAInstallBanner } from './components/PWAInstallBanner';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { OrosIcon, CopasIcon, EspadasIcon, BastosIcon } from './components/SpanishDeckIcons';
 
@@ -361,6 +362,9 @@ export default function App() {
         timeLeft={timerTimeLeft}
         onOpenMoreGames={handleOpenMoreGames}
       />
+
+      {/* PWA In-App Install Prompt Banner */}
+      <PWAInstallBanner />
 
       {/* Main Table Felt Container */}
       <main className="flex-1 max-w-5xl w-full mx-auto p-2.5 sm:p-6 lg:p-8 space-y-3 sm:space-y-6 pb-28 md:pb-8">
