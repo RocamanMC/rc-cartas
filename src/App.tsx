@@ -31,6 +31,8 @@ import { SorteoModal } from './components/SorteoModal';
 import { TurnTimerModal } from './components/TurnTimerModal';
 import { FloatingTimerWidget } from './components/FloatingTimerWidget';
 import { PWAInstallBanner } from './components/PWAInstallBanner';
+import { type TapeteTheme } from './components/TableSettingsModal';
+import { haptics } from './utils/haptics';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { OrosIcon, CopasIcon, EspadasIcon, BastosIcon } from './components/SpanishDeckIcons';
 
@@ -42,6 +44,48 @@ export default function App() {
   const [moreGamesOpen, setMoreGamesOpen] = useState(false);
   const [sorteoOpen, setSorteoOpen] = useState(false);
   const [timerOpen, setTimerOpen] = useState(false);
+
+  // Table Felt Theme State ('verde' | 'rojo' | 'azul' | 'negro')
+  const [currentTheme, setCurrentTheme] = useState<TapeteTheme>(() => {
+    try {
+      const saved = localStorage.getItem('cartasrc_theme');
+      if (saved === 'verde' || saved === 'rojo' || saved === 'azul' || saved === 'negro') {
+        return saved;
+      }
+    } catch {}
+    return 'verde';
+  });
+
+  const [hapticsEnabled, setHapticsEnabled] = useState(haptics.enabled);
+
+  const handleThemeChange = (newTheme: TapeteTheme) => {
+    setCurrentTheme(newTheme);
+    try {
+      localStorage.setItem('cartasrc_theme', newTheme);
+    } catch {}
+  };
+
+  // Synchronize theme attribute to root and body
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    document.body.setAttribute('data-theme', currentTheme);
+
+    const themeColors: Record<TapeteTheme, string> = {
+      verde: '#072415',
+      rojo: '#240810',
+      azul: '#0c1a32',
+      negro: '#14171c',
+    };
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute('content', themeColors[currentTheme] || '#072415');
+    }
+  }, [currentTheme]);
+
+  const handleToggleHaptics = () => {
+    const updated = haptics.toggle();
+    setHapticsEnabled(updated);
+  };
 
   // Turn Timer & Wake Lock State
   const [timerDuration, setTimerDuration] = useState(60);
@@ -342,7 +386,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-tapete text-slate-100 flex flex-col antialiased selection:bg-amber-500/30 selection:text-amber-200">
+    <div data-theme={currentTheme} className="min-h-screen bg-tapete text-slate-100 flex flex-col antialiased selection:bg-amber-500/30 selection:text-amber-200">
       {/* Top Bar Contract (Section 2) */}
       <Navbar
         currentGame={currentGame}
@@ -432,6 +476,10 @@ export default function App() {
             <ProfilesView
               profiles={profiles}
               onSaveProfiles={setProfiles}
+              currentTheme={currentTheme}
+              onChangeTheme={handleThemeChange}
+              hapticsEnabled={hapticsEnabled}
+              onToggleHaptics={handleToggleHaptics}
               onSelectGameWithPlayers={(targetGame, selectedProfiles) => {
                 if (targetGame === 'escoba') {
                   setEscobaGame({

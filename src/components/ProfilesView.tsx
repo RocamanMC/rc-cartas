@@ -1,20 +1,30 @@
 import React, { useState } from 'react';
 import { PlayerProfile, GameType, AvatarSuit } from '../types';
 import { SpanishSuitIcon, AVATAR_SUIT_OPTIONS } from './SpanishDeckIcons';
-import { UserPlus, Edit2, Trash2, Trophy, Users, Search, Play, Check } from 'lucide-react';
+import { UserPlus, Edit2, Trash2, Trophy, Users, Search, Play, Check, Palette, Smartphone, Sparkles } from 'lucide-react';
 import { sounds } from '../utils/sound';
+import { haptics } from '../utils/haptics';
 import { ConfirmModal } from './ConfirmModal';
+import { TapeteTheme } from './TableSettingsModal';
 
 interface ProfilesViewProps {
   profiles: PlayerProfile[];
   onSaveProfiles: (profiles: PlayerProfile[]) => void;
   onSelectGameWithPlayers: (game: GameType, players: PlayerProfile[]) => void;
+  currentTheme?: TapeteTheme;
+  onChangeTheme?: (theme: TapeteTheme) => void;
+  hapticsEnabled?: boolean;
+  onToggleHaptics?: () => void;
 }
 
 export const ProfilesView: React.FC<ProfilesViewProps> = ({
   profiles,
   onSaveProfiles,
   onSelectGameWithPlayers,
+  currentTheme = 'verde',
+  onChangeTheme,
+  hapticsEnabled = true,
+  onToggleHaptics,
 }) => {
   // Confirm modal state
   const [deleteConfirm, setDeleteConfirm] = useState<{
@@ -161,6 +171,126 @@ export const ProfilesView: React.FC<ProfilesViewProps> = ({
           + Nuevo Jugador
         </button>
       </div>
+
+      {/* Theme & Felt Color Customization Card */}
+      {onChangeTheme && (
+        <div className="p-4 sm:p-5 bg-[#082817] rounded-2xl border border-amber-800/50 shadow-xl space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300">
+                <Palette className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold font-deck text-amber-200">
+                  Personalización del Tapete
+                </h3>
+                <p className="text-xs text-emerald-300/70">
+                  Cambia el color de toda la aplicación y la sensación táctil
+                </p>
+              </div>
+            </div>
+
+            {onToggleHaptics && (
+              <div className="flex items-center gap-2 bg-[#041a0e] px-2.5 py-1.5 rounded-xl border border-amber-900/50">
+                <Smartphone className={`w-3.5 h-3.5 ${hapticsEnabled ? 'text-amber-400 animate-pulse' : 'text-emerald-400/50'}`} />
+                <span className="text-xs font-medium text-emerald-200 hidden sm:inline">Vibración:</span>
+                <button
+                  type="button"
+                  onClick={onToggleHaptics}
+                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                    hapticsEnabled ? 'bg-amber-500' : 'bg-emerald-950'
+                  }`}
+                  title="Alternar vibración háptica"
+                >
+                  <span
+                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                      hapticsEnabled ? 'translate-x-4' : 'translate-x-0'
+                    }`}
+                  />
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Theme Palette Buttons */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            {[
+              {
+                id: 'verde' as TapeteTheme,
+                name: 'Verde Taberna',
+                desc: 'Tapete clásico español',
+                swatch: 'bg-[#0d3822] border-emerald-400',
+              },
+              {
+                id: 'rojo' as TapeteTheme,
+                name: 'Rojo Borgoña',
+                desc: 'Terciopelo casino',
+                swatch: 'bg-[#2b0b14] border-rose-400',
+              },
+              {
+                id: 'azul' as TapeteTheme,
+                name: 'Azul Cantábrico',
+                desc: 'Zafiro real',
+                swatch: 'bg-[#0d1e38] border-blue-400',
+              },
+              {
+                id: 'negro' as TapeteTheme,
+                name: 'Negro Azabache',
+                desc: 'Edición nocturna',
+                swatch: 'bg-[#121417] border-amber-400',
+              },
+            ].map((th) => {
+              const isSelected = currentTheme === th.id;
+              return (
+                <button
+                  key={th.id}
+                  type="button"
+                  onClick={() => {
+                    sounds.playCardFlick();
+                    haptics.point();
+                    onChangeTheme(th.id);
+                  }}
+                  className={`relative p-3 rounded-xl border-2 text-left transition-all cursor-pointer flex flex-col justify-between h-20 ${
+                    isSelected
+                      ? `${th.swatch} ring-2 ring-amber-400 shadow-lg scale-[1.02]`
+                      : `${th.swatch} opacity-75 hover:opacity-100 hover:scale-[1.01]`
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-white font-deck truncate">
+                      {th.name}
+                    </span>
+                    {isSelected && (
+                      <div className="w-4 h-4 rounded-full bg-amber-400 text-amber-950 flex items-center justify-center shrink-0">
+                        <Check className="w-3 h-3 stroke-[3]" />
+                      </div>
+                    )}
+                  </div>
+                  <span className="text-[10px] text-slate-300 truncate">
+                    {th.desc}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {hapticsEnabled && (
+            <div className="flex justify-end pt-1">
+              <button
+                type="button"
+                onClick={() => {
+                  haptics.victory();
+                  sounds.playStoneClick();
+                }}
+                className="px-3 py-1 bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 rounded-lg text-[11px] font-semibold transition-colors flex items-center gap-1.5 cursor-pointer"
+              >
+                <Sparkles className="w-3 h-3 text-amber-400" />
+                <span>Probar vibración táctil</span>
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Form to Add / Edit Profile */}
       {showAddForm && (

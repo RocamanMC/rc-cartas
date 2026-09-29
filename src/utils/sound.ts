@@ -7,6 +7,8 @@
  * - Undo click
  */
 
+import { haptics } from './haptics';
+
 class SoundEffects {
   private ctx: AudioContext | null = null;
   public enabled: boolean = true;
@@ -47,6 +49,7 @@ class SoundEffects {
   }
 
   public playCardFlick() {
+    haptics.light();
     if (!this.enabled) return;
     this.initCtx();
     if (!this.ctx) return;
@@ -74,6 +77,7 @@ class SoundEffects {
   }
 
   public playStoneClick() {
+    haptics.stone();
     if (!this.enabled) return;
     this.initCtx();
     if (!this.ctx) return;
@@ -97,6 +101,7 @@ class SoundEffects {
   }
 
   public playPointChime() {
+    haptics.point();
     if (!this.enabled) return;
     this.initCtx();
     if (!this.ctx) return;
@@ -148,6 +153,7 @@ class SoundEffects {
   }
 
   public playUndo() {
+    haptics.undo();
     if (!this.enabled) return;
     this.initCtx();
     if (!this.ctx) return;
@@ -264,6 +270,7 @@ class SoundEffects {
   }
 
   public playVictory() {
+    haptics.victory();
     if (!this.enabled) return;
     this.initCtx();
     if (!this.ctx) return;

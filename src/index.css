@@ -37,13 +37,774 @@
   padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
 }
 
-/* Green felt baize texture with subtle micro-weave and tavern lighting */
-.bg-tapete {
-  background-color: #0d3822;
+/* ==================== FELT BACKGROUNDS ==================== */
+/* Green felt (default) */
+.bg-tapete,
+html[data-theme="verde"] body,
+html[data-theme="verde"] .bg-tapete,
+html[data-theme="verde"].bg-tapete,
+[data-theme="verde"] .bg-tapete,
+[data-theme="verde"].bg-tapete {
+  background-color: #0d3822 !important;
   background-image: 
     radial-gradient(ellipse at 50% 20%, rgba(20, 102, 60, 0.45) 0%, rgba(7, 43, 24, 0.85) 75%, rgba(4, 26, 15, 0.98) 100%),
     repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 3px),
-    repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.03) 0px, rgba(0, 0, 0, 0.03) 1px, transparent 1px, transparent 3px);
+    repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.03) 0px, rgba(0, 0, 0, 0.03) 1px, transparent 1px, transparent 3px) !important;
+}
+
+/* Rojo Borgoña / Casino Felt */
+html[data-theme="rojo"] body,
+html[data-theme="rojo"] .bg-tapete,
+html[data-theme="rojo"].bg-tapete,
+[data-theme="rojo"] .bg-tapete,
+[data-theme="rojo"].bg-tapete {
+  background-color: #2b0b14 !important;
+  background-image: 
+    radial-gradient(ellipse at 50% 20%, rgba(136, 19, 44, 0.52) 0%, rgba(54, 8, 17, 0.88) 75%, rgba(28, 4, 9, 0.98) 100%),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 3px),
+    repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.03) 0px, rgba(0, 0, 0, 0.03) 1px, transparent 1px, transparent 3px) !important;
+}
+
+/* Azul Cantábrico / Zafiro Felt */
+html[data-theme="azul"] body,
+html[data-theme="azul"] .bg-tapete,
+html[data-theme="azul"].bg-tapete,
+[data-theme="azul"] .bg-tapete,
+[data-theme="azul"].bg-tapete {
+  background-color: #0a182e !important;
+  background-image: 
+    radial-gradient(ellipse at 50% 20%, rgba(20, 58, 115, 0.52) 0%, rgba(7, 24, 54, 0.88) 75%, rgba(4, 13, 31, 0.98) 100%),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 3px),
+    repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.03) 0px, rgba(0, 0, 0, 0.03) 1px, transparent 1px, transparent 3px) !important;
+}
+
+/* Negro Azabache / Nocturno Felt */
+html[data-theme="negro"] body,
+html[data-theme="negro"] .bg-tapete,
+html[data-theme="negro"].bg-tapete,
+[data-theme="negro"] .bg-tapete,
+[data-theme="negro"].bg-tapete {
+  background-color: #121417 !important;
+  background-image: 
+    radial-gradient(ellipse at 50% 20%, rgba(45, 52, 58, 0.52) 0%, rgba(18, 21, 24, 0.88) 75%, rgba(8, 10, 12, 0.98) 100%),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 3px),
+    repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.03) 0px, rgba(0, 0, 0, 0.03) 1px, transparent 1px, transparent 3px) !important;
+}
+
+/* ==================== THEME: ROJO BORGOÑA (ALL APP CONTAINERS & HIGHLIGHTS) ==================== */
+[data-theme="rojo"] header {
+  background-color: rgba(38, 8, 16, 0.95) !important;
+}
+[data-theme="rojo"] nav[aria-label="Navegación móvil de juegos"] {
+  background-color: rgba(38, 8, 16, 0.95) !important;
+}
+[data-theme="rojo"] footer {
+  background-color: rgba(28, 6, 12, 0.95) !important;
+}
+
+/* Background containers & Player/Team Cards (Rojo) */
+[data-theme="rojo"] .bg-\[\#14532d\],
+[data-theme="rojo"] .bg-\[\#124d2d\] {
+  background-color: #721631 !important; /* Mano + Ganador / Activo */
+}
+
+[data-theme="rojo"] .bg-\[\#114728\],
+[data-theme="rojo"] .bg-\[\#0f4427\],
+[data-theme="rojo"] .bg-\[\#0f4025\] {
+  background-color: #5c1226 !important; /* Ganador / Líder */
+}
+
+[data-theme="rojo"] .bg-\[\#0d3b22\],
+[data-theme="rojo"] .bg-\[\#0e4024\],
+[data-theme="rojo"] .bg-\[\#0e3b23\],
+[data-theme="rojo"] .bg-\[\#0c3820\],
+[data-theme="rojo"] .bg-\[\#0c351f\] {
+  background-color: #4a0d1e !important; /* Mano / Repartidor / Activo */
+}
+
+[data-theme="rojo"] .bg-\[\#0a2f1b\],
+[data-theme="rojo"] .bg-\[\#0a311c\],
+[data-theme="rojo"] .bg-\[\#0a2e1a\],
+[data-theme="rojo"] .bg-\[\#0a2b1b\],
+[data-theme="rojo"] .bg-\[\#092b19\],
+[data-theme="rojo"] .bg-\[\#092918\],
+[data-theme="rojo"] .bg-\[\#092a19\],
+[data-theme="rojo"] .bg-\[\#092c1a\],
+[data-theme="rojo"] .bg-\[\#092e1b\],
+[data-theme="rojo"] .bg-\[\#082817\],
+[data-theme="rojo"] .bg-\[\#0b331e\] {
+  background-color: #360c18 !important; /* Tarjeta normal / Jugador */
+}
+
+[data-theme="rojo"] .bg-\[\#0a311c\]\/95 {
+  background-color: rgba(54, 12, 24, 0.95) !important;
+}
+
+[data-theme="rojo"] .hover\:bg-\[\#0a311c\]\/60:hover {
+  background-color: rgba(74, 13, 29, 0.6) !important;
+}
+
+[data-theme="rojo"] .bg-\[\#062113\],
+[data-theme="rojo"] .bg-\[\#072415\],
+[data-theme="rojo"] .bg-\[\#072516\],
+[data-theme="rojo"] .bg-\[\#072614\],
+[data-theme="rojo"] .bg-\[\#072013\],
+[data-theme="rojo"] .bg-\[\#05170d\],
+[data-theme="rojo"] .bg-\[\#061e11\],
+[data-theme="rojo"] .bg-\[\#041a0e\],
+[data-theme="rojo"] .bg-\[\#051c0f\],
+[data-theme="rojo"] .bg-\[\#03150b\],
+[data-theme="rojo"] .bg-\[\#04190e\],
+[data-theme="rojo"] .bg-\[\#051a0e\],
+[data-theme="rojo"] .bg-\[\#051c10\],
+[data-theme="rojo"] .bg-\[\#061c10\],
+[data-theme="rojo"] .bg-\[\#061d11\],
+[data-theme="rojo"] .bg-\[\#061f12\],
+[data-theme="rojo"] .bg-\[\#062012\],
+[data-theme="rojo"] .bg-\[\#082215\],
+[data-theme="rojo"] .bg-\[\#082415\] {
+  background-color: #240810 !important; /* Contenedores / Subsecciones */
+}
+
+[data-theme="rojo"] .bg-\[\#062113\]\/95 {
+  background-color: rgba(36, 8, 16, 0.95) !important;
+}
+
+[data-theme="rojo"] .bg-\[\#062113\]\/90 {
+  background-color: rgba(36, 8, 16, 0.9) !important;
+}
+
+[data-theme="rojo"] .bg-\[\#05170d\]\/90 {
+  background-color: rgba(28, 6, 12, 0.9) !important;
+}
+
+[data-theme="rojo"] .from-\[\#062415\] {
+  --tw-gradient-from: #260811 !important;
+}
+
+[data-theme="rojo"] .to-\[\#0a351e\] {
+  --tw-gradient-to: #400d1c !important;
+}
+
+[data-theme="rojo"] .hover\:bg-\[\#0f4427\]:hover,
+[data-theme="rojo"] .hover\:bg-\[\#0c3820\]:hover,
+[data-theme="rojo"] .hover\:bg-\[\#0f4025\]:hover {
+  background-color: #5e162c !important;
+}
+
+[data-theme="rojo"] .bg-emerald-950,
+[data-theme="rojo"] .bg-emerald-950\/30,
+[data-theme="rojo"] .bg-emerald-950\/40,
+[data-theme="rojo"] .bg-emerald-950\/60,
+[data-theme="rojo"] .bg-emerald-950\/70,
+[data-theme="rojo"] .bg-emerald-950\/80,
+[data-theme="rojo"] .bg-emerald-900,
+[data-theme="rojo"] .bg-emerald-900\/30,
+[data-theme="rojo"] .bg-emerald-900\/40 {
+  background-color: rgba(74, 13, 29, 0.6) !important;
+}
+
+[data-theme="rojo"] .hover\:bg-emerald-900\/40:hover,
+[data-theme="rojo"] .hover\:bg-emerald-900\/30:hover,
+[data-theme="rojo"] .hover\:bg-emerald-950\/40:hover {
+  background-color: rgba(136, 19, 44, 0.45) !important;
+}
+
+/* Highlighted Action Buttons & Badges (Rojo) */
+[data-theme="rojo"] .bg-emerald-600,
+[data-theme="rojo"] .bg-emerald-500 {
+  background-color: #e11d48 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="rojo"] .hover\:bg-emerald-500:hover,
+[data-theme="rojo"] .hover\:bg-emerald-600:hover {
+  background-color: #f43f5e !important;
+}
+
+[data-theme="rojo"] .bg-emerald-700 {
+  background-color: #be123c !important;
+}
+
+[data-theme="rojo"] .bg-emerald-800,
+[data-theme="rojo"] .bg-emerald-900,
+[data-theme="rojo"] .bg-emerald-900\/70,
+[data-theme="rojo"] .bg-emerald-900\/60,
+[data-theme="rojo"] .bg-emerald-900\/80 {
+  background-color: #9f1239 !important;
+}
+
+[data-theme="rojo"] .hover\:bg-emerald-800:hover {
+  background-color: #be123c !important;
+}
+
+[data-theme="rojo"] .bg-emerald-400 {
+  background-color: #fb7185 !important;
+  color: #1c0409 !important;
+}
+
+[data-theme="rojo"] .bg-emerald-500\/10,
+[data-theme="rojo"] .bg-emerald-500\/15,
+[data-theme="rojo"] .bg-emerald-500\/20,
+[data-theme="rojo"] .bg-emerald-500\/25,
+[data-theme="rojo"] .bg-emerald-500\/30,
+[data-theme="rojo"] .bg-emerald-500\/40,
+[data-theme="rojo"] .bg-emerald-400\/15,
+[data-theme="rojo"] .bg-emerald-400\/20,
+[data-theme="rojo"] .bg-emerald-400\/25,
+[data-theme="rojo"] .bg-emerald-400\/30 {
+  background-color: rgba(225, 29, 72, 0.22) !important;
+}
+
+/* Highlighted Text (Rojo) */
+[data-theme="rojo"] .text-emerald-50,
+[data-theme="rojo"] .text-emerald-100 {
+  color: #fff1f2 !important;
+}
+
+[data-theme="rojo"] .text-emerald-200,
+[data-theme="rojo"] .text-emerald-200\/60,
+[data-theme="rojo"] .text-emerald-200\/70,
+[data-theme="rojo"] .text-emerald-200\/80,
+[data-theme="rojo"] .text-emerald-200\/90 {
+  color: #fecdd3 !important;
+}
+
+[data-theme="rojo"] .text-emerald-300,
+[data-theme="rojo"] .text-emerald-300\/50,
+[data-theme="rojo"] .text-emerald-300\/60,
+[data-theme="rojo"] .text-emerald-300\/70,
+[data-theme="rojo"] .text-emerald-300\/80 {
+  color: #fda4af !important;
+}
+
+[data-theme="rojo"] .text-emerald-400,
+[data-theme="rojo"] .text-emerald-400\/60,
+[data-theme="rojo"] .text-emerald-500 {
+  color: #fb7185 !important;
+}
+
+/* Highlighted Borders (Rojo) */
+[data-theme="rojo"] .border-emerald-400,
+[data-theme="rojo"] .border-emerald-500,
+[data-theme="rojo"] .border-emerald-600 {
+  border-color: #f43f5e !important;
+}
+
+[data-theme="rojo"] .border-emerald-400\/30,
+[data-theme="rojo"] .border-emerald-400\/40,
+[data-theme="rojo"] .border-emerald-400\/50,
+[data-theme="rojo"] .border-emerald-400\/60,
+[data-theme="rojo"] .border-emerald-500\/20,
+[data-theme="rojo"] .border-emerald-500\/30,
+[data-theme="rojo"] .border-emerald-500\/40,
+[data-theme="rojo"] .border-emerald-500\/50,
+[data-theme="rojo"] .border-emerald-500\/60 {
+  border-color: rgba(244, 63, 94, 0.45) !important;
+}
+
+[data-theme="rojo"] .border-emerald-800,
+[data-theme="rojo"] .border-emerald-800\/50,
+[data-theme="rojo"] .border-emerald-800\/60,
+[data-theme="rojo"] .border-emerald-900,
+[data-theme="rojo"] .border-emerald-900\/50,
+[data-theme="rojo"] .border-emerald-900\/60 {
+  border-color: rgba(159, 18, 57, 0.5) !important;
+}
+
+/* Highlighted Rings & Gradients (Rojo) */
+[data-theme="rojo"] .ring-emerald-400,
+[data-theme="rojo"] .ring-emerald-500,
+[data-theme="rojo"] .ring-emerald-600 {
+  --tw-ring-color: #f43f5e !important;
+}
+
+[data-theme="rojo"] .from-emerald-500,
+[data-theme="rojo"] .from-emerald-600 {
+  --tw-gradient-from: #e11d48 !important;
+}
+
+[data-theme="rojo"] .to-emerald-600,
+[data-theme="rojo"] .to-emerald-700 {
+  --tw-gradient-to: #9f1239 !important;
+}
+
+
+/* ==================== THEME: AZUL CANTÁBRICO (ALL APP CONTAINERS & HIGHLIGHTS) ==================== */
+[data-theme="azul"] header {
+  background-color: rgba(7, 21, 46, 0.95) !important;
+}
+[data-theme="azul"] nav[aria-label="Navegación móvil de juegos"] {
+  background-color: rgba(7, 21, 46, 0.95) !important;
+}
+[data-theme="azul"] footer {
+  background-color: rgba(4, 13, 31, 0.95) !important;
+}
+
+/* Background containers & Player/Team Cards (Azul) */
+[data-theme="azul"] .bg-\[\#14532d\],
+[data-theme="azul"] .bg-\[\#124d2d\] {
+  background-color: #2558a5 !important; /* Mano + Ganador / Activo */
+}
+
+[data-theme="azul"] .bg-\[\#114728\],
+[data-theme="azul"] .bg-\[\#0f4427\],
+[data-theme="azul"] .bg-\[\#0f4025\] {
+  background-color: #1a437f !important; /* Ganador / Líder */
+}
+
+[data-theme="azul"] .bg-\[\#0d3b22\],
+[data-theme="azul"] .bg-\[\#0e4024\],
+[data-theme="azul"] .bg-\[\#0e3b23\],
+[data-theme="azul"] .bg-\[\#0c3820\],
+[data-theme="azul"] .bg-\[\#0c351f\] {
+  background-color: #153564 !important; /* Mano / Repartidor / Activo */
+}
+
+[data-theme="azul"] .bg-\[\#0a2f1b\],
+[data-theme="azul"] .bg-\[\#0a311c\],
+[data-theme="azul"] .bg-\[\#0a2e1a\],
+[data-theme="azul"] .bg-\[\#0a2b1b\],
+[data-theme="azul"] .bg-\[\#092b19\],
+[data-theme="azul"] .bg-\[\#092918\],
+[data-theme="azul"] .bg-\[\#092a19\],
+[data-theme="azul"] .bg-\[\#092c1a\],
+[data-theme="azul"] .bg-\[\#092e1b\],
+[data-theme="azul"] .bg-\[\#082817\],
+[data-theme="azul"] .bg-\[\#0b331e\] {
+  background-color: #12284c !important; /* Tarjeta normal / Jugador */
+}
+
+[data-theme="azul"] .bg-\[\#0a311c\]\/95 {
+  background-color: rgba(18, 40, 76, 0.95) !important;
+}
+
+[data-theme="azul"] .hover\:bg-\[\#0a311c\]\/60:hover {
+  background-color: rgba(26, 67, 127, 0.6) !important;
+}
+
+[data-theme="azul"] .bg-\[\#062113\],
+[data-theme="azul"] .bg-\[\#072415\],
+[data-theme="azul"] .bg-\[\#072516\],
+[data-theme="azul"] .bg-\[\#072614\],
+[data-theme="azul"] .bg-\[\#072013\],
+[data-theme="azul"] .bg-\[\#05170d\],
+[data-theme="azul"] .bg-\[\#061e11\],
+[data-theme="azul"] .bg-\[\#041a0e\],
+[data-theme="azul"] .bg-\[\#051c0f\],
+[data-theme="azul"] .bg-\[\#03150b\],
+[data-theme="azul"] .bg-\[\#04190e\],
+[data-theme="azul"] .bg-\[\#051a0e\],
+[data-theme="azul"] .bg-\[\#051c10\],
+[data-theme="azul"] .bg-\[\#061c10\],
+[data-theme="azul"] .bg-\[\#061d11\],
+[data-theme="azul"] .bg-\[\#061f12\],
+[data-theme="azul"] .bg-\[\#062012\],
+[data-theme="azul"] .bg-\[\#082215\],
+[data-theme="azul"] .bg-\[\#082415\] {
+  background-color: #0c1a32 !important; /* Contenedores / Subsecciones */
+}
+
+[data-theme="azul"] .bg-\[\#062113\]\/95 {
+  background-color: rgba(12, 26, 50, 0.95) !important;
+}
+
+[data-theme="azul"] .bg-\[\#062113\]\/90 {
+  background-color: rgba(12, 26, 50, 0.9) !important;
+}
+
+[data-theme="azul"] .bg-\[\#05170d\]\/90 {
+  background-color: rgba(4, 13, 31, 0.9) !important;
+}
+
+[data-theme="azul"] .from-\[\#062415\] {
+  --tw-gradient-from: #0c1c38 !important;
+}
+
+[data-theme="azul"] .to-\[\#0a351e\] {
+  --tw-gradient-to: #16325f !important;
+}
+
+[data-theme="azul"] .hover\:bg-\[\#0f4427\]:hover,
+[data-theme="azul"] .hover\:bg-\[\#0c3820\]:hover,
+[data-theme="azul"] .hover\:bg-\[\#0f4025\]:hover {
+  background-color: #204786 !important;
+}
+
+[data-theme="azul"] .bg-emerald-950,
+[data-theme="azul"] .bg-emerald-950\/30,
+[data-theme="azul"] .bg-emerald-950\/40,
+[data-theme="azul"] .bg-emerald-950\/60,
+[data-theme="azul"] .bg-emerald-950\/70,
+[data-theme="azul"] .bg-emerald-950\/80,
+[data-theme="azul"] .bg-emerald-900,
+[data-theme="azul"] .bg-emerald-900\/30,
+[data-theme="azul"] .bg-emerald-900\/40 {
+  background-color: rgba(18, 48, 92, 0.6) !important;
+}
+
+[data-theme="azul"] .hover\:bg-emerald-900\/40:hover,
+[data-theme="azul"] .hover\:bg-emerald-900\/30:hover,
+[data-theme="azul"] .hover\:bg-emerald-950\/40:hover {
+  background-color: rgba(30, 58, 138, 0.45) !important;
+}
+
+/* Highlighted Action Buttons & Badges (Azul) */
+[data-theme="azul"] .bg-emerald-600,
+[data-theme="azul"] .bg-emerald-500 {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+}
+
+[data-theme="azul"] .hover\:bg-emerald-500:hover,
+[data-theme="azul"] .hover\:bg-emerald-600:hover {
+  background-color: #3b82f6 !important;
+}
+
+[data-theme="azul"] .bg-emerald-700 {
+  background-color: #1d4ed8 !important;
+}
+
+[data-theme="azul"] .bg-emerald-800,
+[data-theme="azul"] .bg-emerald-900,
+[data-theme="azul"] .bg-emerald-900\/70,
+[data-theme="azul"] .bg-emerald-900\/60,
+[data-theme="azul"] .bg-emerald-900\/80 {
+  background-color: #1e40af !important;
+}
+
+[data-theme="azul"] .hover\:bg-emerald-800:hover {
+  background-color: #1d4ed8 !important;
+}
+
+[data-theme="azul"] .bg-emerald-400 {
+  background-color: #60a5fa !important;
+  color: #051329 !important;
+}
+
+[data-theme="azul"] .bg-emerald-500\/10,
+[data-theme="azul"] .bg-emerald-500\/15,
+[data-theme="azul"] .bg-emerald-500\/20,
+[data-theme="azul"] .bg-emerald-500\/25,
+[data-theme="azul"] .bg-emerald-500\/30,
+[data-theme="azul"] .bg-emerald-500\/40,
+[data-theme="azul"] .bg-emerald-400\/15,
+[data-theme="azul"] .bg-emerald-400\/20,
+[data-theme="azul"] .bg-emerald-400\/25,
+[data-theme="azul"] .bg-emerald-400\/30 {
+  background-color: rgba(37, 99, 235, 0.22) !important;
+}
+
+/* Highlighted Text (Azul) */
+[data-theme="azul"] .text-emerald-50,
+[data-theme="azul"] .text-emerald-100 {
+  color: #eff6ff !important;
+}
+
+[data-theme="azul"] .text-emerald-200,
+[data-theme="azul"] .text-emerald-200\/60,
+[data-theme="azul"] .text-emerald-200\/70,
+[data-theme="azul"] .text-emerald-200\/80,
+[data-theme="azul"] .text-emerald-200\/90 {
+  color: #bfdbfe !important;
+}
+
+[data-theme="azul"] .text-emerald-300,
+[data-theme="azul"] .text-emerald-300\/50,
+[data-theme="azul"] .text-emerald-300\/60,
+[data-theme="azul"] .text-emerald-300\/70,
+[data-theme="azul"] .text-emerald-300\/80 {
+  color: #93c5fd !important;
+}
+
+[data-theme="azul"] .text-emerald-400,
+[data-theme="azul"] .text-emerald-400\/60,
+[data-theme="azul"] .text-emerald-500 {
+  color: #60a5fa !important;
+}
+
+/* Highlighted Borders (Azul) */
+[data-theme="azul"] .border-emerald-400,
+[data-theme="azul"] .border-emerald-500,
+[data-theme="azul"] .border-emerald-600 {
+  border-color: #3b82f6 !important;
+}
+
+[data-theme="azul"] .border-emerald-400\/30,
+[data-theme="azul"] .border-emerald-400\/40,
+[data-theme="azul"] .border-emerald-400\/50,
+[data-theme="azul"] .border-emerald-400\/60,
+[data-theme="azul"] .border-emerald-500\/20,
+[data-theme="azul"] .border-emerald-500\/30,
+[data-theme="azul"] .border-emerald-500\/40,
+[data-theme="azul"] .border-emerald-500\/50,
+[data-theme="azul"] .border-emerald-500\/60 {
+  border-color: rgba(59, 130, 246, 0.45) !important;
+}
+
+[data-theme="azul"] .border-emerald-800,
+[data-theme="azul"] .border-emerald-800\/50,
+[data-theme="azul"] .border-emerald-800\/60,
+[data-theme="azul"] .border-emerald-900,
+[data-theme="azul"] .border-emerald-900\/50,
+[data-theme="azul"] .border-emerald-900\/60 {
+  border-color: rgba(30, 58, 138, 0.5) !important;
+}
+
+/* Highlighted Rings & Gradients (Azul) */
+[data-theme="azul"] .ring-emerald-400,
+[data-theme="azul"] .ring-emerald-500,
+[data-theme="azul"] .ring-emerald-600 {
+  --tw-ring-color: #3b82f6 !important;
+}
+
+[data-theme="azul"] .from-emerald-500,
+[data-theme="azul"] .from-emerald-600 {
+  --tw-gradient-from: #2563eb !important;
+}
+
+[data-theme="azul"] .to-emerald-600,
+[data-theme="azul"] .to-emerald-700 {
+  --tw-gradient-to: #1e40af !important;
+}
+
+
+/* ==================== THEME: NEGRO AZABACHE (ALL APP CONTAINERS & HIGHLIGHTS) ==================== */
+[data-theme="negro"] header {
+  background-color: rgba(14, 16, 19, 0.95) !important;
+}
+[data-theme="negro"] nav[aria-label="Navegación móvil de juegos"] {
+  background-color: rgba(14, 16, 19, 0.95) !important;
+}
+[data-theme="negro"] footer {
+  background-color: rgba(9, 10, 12, 0.95) !important;
+}
+
+/* Background containers & Player/Team Cards (Negro) */
+[data-theme="negro"] .bg-\[\#14532d\],
+[data-theme="negro"] .bg-\[\#124d2d\] {
+  background-color: #3e4857 !important; /* Mano + Ganador / Activo con destello oro */
+}
+
+[data-theme="negro"] .bg-\[\#114728\],
+[data-theme="negro"] .bg-\[\#0f4427\],
+[data-theme="negro"] .bg-\[\#0f4025\] {
+  background-color: #313845 !important; /* Ganador / Líder */
+}
+
+[data-theme="negro"] .bg-\[\#0d3b22\],
+[data-theme="negro"] .bg-\[\#0e4024\],
+[data-theme="negro"] .bg-\[\#0e3b23\],
+[data-theme="negro"] .bg-\[\#0c3820\],
+[data-theme="negro"] .bg-\[\#0c351f\] {
+  background-color: #272d37 !important; /* Mano / Repartidor / Activo */
+}
+
+[data-theme="negro"] .bg-\[\#0a2f1b\],
+[data-theme="negro"] .bg-\[\#0a311c\],
+[data-theme="negro"] .bg-\[\#0a2e1a\],
+[data-theme="negro"] .bg-\[\#0a2b1b\],
+[data-theme="negro"] .bg-\[\#092b19\],
+[data-theme="negro"] .bg-\[\#092918\],
+[data-theme="negro"] .bg-\[\#092a19\],
+[data-theme="negro"] .bg-\[\#092c1a\],
+[data-theme="negro"] .bg-\[\#092e1b\],
+[data-theme="negro"] .bg-\[\#082817\],
+[data-theme="negro"] .bg-\[\#0b331e\] {
+  background-color: #1f232a !important; /* Tarjeta normal / Jugador */
+}
+
+[data-theme="negro"] .bg-\[\#0a311c\]\/95 {
+  background-color: rgba(31, 35, 42, 0.95) !important;
+}
+
+[data-theme="negro"] .hover\:bg-\[\#0a311c\]\/60:hover {
+  background-color: rgba(49, 56, 69, 0.6) !important;
+}
+
+[data-theme="negro"] .bg-\[\#062113\],
+[data-theme="negro"] .bg-\[\#072415\],
+[data-theme="negro"] .bg-\[\#072516\],
+[data-theme="negro"] .bg-\[\#072614\],
+[data-theme="negro"] .bg-\[\#072013\],
+[data-theme="negro"] .bg-\[\#05170d\],
+[data-theme="negro"] .bg-\[\#061e11\],
+[data-theme="negro"] .bg-\[\#041a0e\],
+[data-theme="negro"] .bg-\[\#051c0f\],
+[data-theme="negro"] .bg-\[\#03150b\],
+[data-theme="negro"] .bg-\[\#04190e\],
+[data-theme="negro"] .bg-\[\#051a0e\],
+[data-theme="negro"] .bg-\[\#051c10\],
+[data-theme="negro"] .bg-\[\#061c10\],
+[data-theme="negro"] .bg-\[\#061d11\],
+[data-theme="negro"] .bg-\[\#061f12\],
+[data-theme="negro"] .bg-\[\#062012\],
+[data-theme="negro"] .bg-\[\#082215\],
+[data-theme="negro"] .bg-\[\#082415\] {
+  background-color: #14171c !important; /* Contenedores / Subsecciones */
+}
+
+[data-theme="negro"] .bg-\[\#062113\]\/95 {
+  background-color: rgba(20, 23, 28, 0.95) !important;
+}
+
+[data-theme="negro"] .bg-\[\#062113\]\/90 {
+  background-color: rgba(20, 23, 28, 0.9) !important;
+}
+
+[data-theme="negro"] .bg-\[\#05170d\]\/90 {
+  background-color: rgba(14, 16, 19, 0.9) !important;
+}
+
+[data-theme="negro"] .from-\[\#062415\] {
+  --tw-gradient-from: #14171c !important;
+}
+
+[data-theme="negro"] .to-\[\#0a351e\] {
+  --tw-gradient-to: #222730 !important;
+}
+
+[data-theme="negro"] .hover\:bg-\[\#0f4427\]:hover,
+[data-theme="negro"] .hover\:bg-\[\#0c3820\]:hover,
+[data-theme="negro"] .hover\:bg-\[\#0f4025\]:hover {
+  background-color: #38404d !important;
+}
+
+[data-theme="negro"] .bg-emerald-950,
+[data-theme="negro"] .bg-emerald-950\/30,
+[data-theme="negro"] .bg-emerald-950\/40,
+[data-theme="negro"] .bg-emerald-950\/60,
+[data-theme="negro"] .bg-emerald-950\/70,
+[data-theme="negro"] .bg-emerald-950\/80,
+[data-theme="negro"] .bg-emerald-900,
+[data-theme="negro"] .bg-emerald-900\/30,
+[data-theme="negro"] .bg-emerald-900\/40 {
+  background-color: rgba(40, 46, 56, 0.6) !important;
+}
+
+[data-theme="negro"] .hover\:bg-emerald-900\/40:hover,
+[data-theme="negro"] .hover\:bg-emerald-900\/30:hover,
+[data-theme="negro"] .hover\:bg-emerald-950\/40:hover {
+  background-color: rgba(217, 119, 6, 0.25) !important;
+}
+
+/* Highlighted Action Buttons & Badges (Negro -> Ámbar / Oro) */
+[data-theme="negro"] .bg-emerald-600,
+[data-theme="negro"] .bg-emerald-500 {
+  background-color: #d97706 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="negro"] .hover\:bg-emerald-500:hover,
+[data-theme="negro"] .hover\:bg-emerald-600:hover {
+  background-color: #f59e0b !important;
+}
+
+[data-theme="negro"] .bg-emerald-700 {
+  background-color: #b45309 !important;
+}
+
+[data-theme="negro"] .bg-emerald-800,
+[data-theme="negro"] .bg-emerald-900,
+[data-theme="negro"] .bg-emerald-900\/70,
+[data-theme="negro"] .bg-emerald-900\/60,
+[data-theme="negro"] .bg-emerald-900\/80 {
+  background-color: #92400e !important;
+}
+
+[data-theme="negro"] .hover\:bg-emerald-800:hover {
+  background-color: #b45309 !important;
+}
+
+[data-theme="negro"] .bg-emerald-400 {
+  background-color: #fbbf24 !important;
+  color: #171100 !important;
+}
+
+[data-theme="negro"] .bg-emerald-500\/10,
+[data-theme="negro"] .bg-emerald-500\/15,
+[data-theme="negro"] .bg-emerald-500\/20,
+[data-theme="negro"] .bg-emerald-500\/25,
+[data-theme="negro"] .bg-emerald-500\/30,
+[data-theme="negro"] .bg-emerald-500\/40,
+[data-theme="negro"] .bg-emerald-400\/15,
+[data-theme="negro"] .bg-emerald-400\/20,
+[data-theme="negro"] .bg-emerald-400\/25,
+[data-theme="negro"] .bg-emerald-400\/30 {
+  background-color: rgba(217, 119, 6, 0.22) !important;
+}
+
+/* Highlighted Text (Negro) */
+[data-theme="negro"] .text-emerald-50,
+[data-theme="negro"] .text-emerald-100 {
+  color: #f8fafc !important;
+}
+
+[data-theme="negro"] .text-emerald-200,
+[data-theme="negro"] .text-emerald-200\/60,
+[data-theme="negro"] .text-emerald-200\/70,
+[data-theme="negro"] .text-emerald-200\/80,
+[data-theme="negro"] .text-emerald-200\/90 {
+  color: #e2e8f0 !important;
+}
+
+[data-theme="negro"] .text-emerald-300,
+[data-theme="negro"] .text-emerald-300\/50,
+[data-theme="negro"] .text-emerald-300\/60,
+[data-theme="negro"] .text-emerald-300\/70,
+[data-theme="negro"] .text-emerald-300\/80 {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="negro"] .text-emerald-400,
+[data-theme="negro"] .text-emerald-400\/60,
+[data-theme="negro"] .text-emerald-500 {
+  color: #fbbf24 !important;
+}
+
+/* Highlighted Borders (Negro) */
+[data-theme="negro"] .border-emerald-400,
+[data-theme="negro"] .border-emerald-500,
+[data-theme="negro"] .border-emerald-600 {
+  border-color: #f59e0b !important;
+}
+
+[data-theme="negro"] .border-emerald-400\/30,
+[data-theme="negro"] .border-emerald-400\/40,
+[data-theme="negro"] .border-emerald-400\/50,
+[data-theme="negro"] .border-emerald-400\/60,
+[data-theme="negro"] .border-emerald-500\/20,
+[data-theme="negro"] .border-emerald-500\/30,
+[data-theme="negro"] .border-emerald-500\/40,
+[data-theme="negro"] .border-emerald-500\/50,
+[data-theme="negro"] .border-emerald-500\/60 {
+  border-color: rgba(245, 158, 11, 0.45) !important;
+}
+
+[data-theme="negro"] .border-emerald-800,
+[data-theme="negro"] .border-emerald-800\/50,
+[data-theme="negro"] .border-emerald-800\/60,
+[data-theme="negro"] .border-emerald-900,
+[data-theme="negro"] .border-emerald-900\/50,
+[data-theme="negro"] .border-emerald-900\/60 {
+  border-color: rgba(71, 85, 105, 0.5) !important;
+}
+
+/* Highlighted Rings & Gradients (Negro) */
+[data-theme="negro"] .ring-emerald-400,
+[data-theme="negro"] .ring-emerald-500,
+[data-theme="negro"] .ring-emerald-600 {
+  --tw-ring-color: #f59e0b !important;
+}
+
+[data-theme="negro"] .from-emerald-500,
+[data-theme="negro"] .from-emerald-600 {
+  --tw-gradient-from: #d97706 !important;
+}
+
+[data-theme="negro"] .to-emerald-600,
+[data-theme="negro"] .to-emerald-700 {
+  --tw-gradient-to: #78350f !important;
 }
 
 /* Classic card paper texture */

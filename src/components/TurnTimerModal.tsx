@@ -161,12 +161,12 @@ export const TurnTimerModal: React.FC<TurnTimerModalProps> = ({
                   cy="50"
                   r="44"
                   fill="none"
-                  stroke={isTimeOver ? '#ef4444' : isDanger ? '#f59e0b' : '#10b981'}
+                  stroke={isTimeOver ? '#ef4444' : isDanger ? '#f59e0b' : 'currentColor'}
                   strokeWidth="5"
                   strokeDasharray="276.46"
                   strokeDashoffset={276.46 * (1 - progressPercent / 100)}
                   strokeLinecap="round"
-                  className="transition-all duration-300"
+                  className="transition-all duration-300 text-emerald-500"
                 />
               </svg>
 
