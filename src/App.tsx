@@ -411,7 +411,7 @@ export default function App() {
       <PWAInstallBanner />
 
       {/* Main Table Felt Container */}
-      <main className="flex-1 max-w-5xl w-full mx-auto p-2.5 sm:p-6 lg:p-8 space-y-3 sm:space-y-6 pb-28 md:pb-8">
+      <main className={`flex-1 max-w-5xl w-full mx-auto ${currentGame === 'mus' ? 'px-1 py-1 sm:px-6 sm:py-6 lg:p-8 space-y-2 sm:space-y-6 pb-20 md:pb-8' : 'p-2.5 sm:p-6 lg:p-8 space-y-3 sm:space-y-6 pb-28 md:pb-8'}`}>
         {/* Heraldic Card Banner */}
         <TableBanner
           currentGame={currentGame}
