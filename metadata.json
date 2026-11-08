@@ -1,6 +1,0 @@
-{
-  "name": "CartasRC - Anotador de Baraja",
-  "description": "CartasRC: Anotador clásico de tantos para juegos de cartas de la baraja española: Escoba del 15, Mus con amarracos y vacas, Chinchón con reenganche, Tute y mesa libre.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}

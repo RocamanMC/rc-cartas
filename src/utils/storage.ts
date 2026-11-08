@@ -10,8 +10,8 @@ const STORAGE_KEYS = {
 };
 
 export const defaultProfiles: PlayerProfile[] = [
-  { id: 'prof-1', name: 'Rodrigo', nickname: 'El As', avatarSuit: 'oros', gamesPlayed: 0, gamesWon: 0, createdAt: Date.now() - 5000 },
-  { id: 'prof-2', name: 'María', nickname: 'La Reina', avatarSuit: 'corazones', gamesPlayed: 0, gamesWon: 0, createdAt: Date.now() - 4000 },
+  { id: 'prof-1', name: 'Jugador 1', nickname: 'El As', avatarSuit: 'oros', gamesPlayed: 0, gamesWon: 0, createdAt: Date.now() - 5000 },
+  { id: 'prof-2', name: 'Jugador 2', nickname: 'La Reina', avatarSuit: 'corazones', gamesPlayed: 0, gamesWon: 0, createdAt: Date.now() - 4000 },
   { id: 'prof-3', name: 'Carlos', nickname: 'El Músico', avatarSuit: 'picas', gamesPlayed: 0, gamesWon: 0, createdAt: Date.now() - 3000 },
   { id: 'prof-4', name: 'David', nickname: 'El Capi', avatarSuit: 'bastos', gamesPlayed: 0, gamesWon: 0, createdAt: Date.now() - 2000 },
   { id: 'prof-5', name: 'Elena', nickname: 'La Furia', avatarSuit: 'fuego', gamesPlayed: 0, gamesWon: 0, createdAt: Date.now() - 1000 },
@@ -21,8 +21,8 @@ export const defaultProfiles: PlayerProfile[] = [
 // Initial default templates
 export const defaultEscobaGame: EscobaGame = {
   players: [
-    { id: 'p1', name: 'Rodrigo' },
-    { id: 'p2', name: 'María' },
+    { id: 'p1', name: 'Jugador 1' },
+    { id: 'p2', name: 'Jugador 2' },
   ],
   targetPoints: 21,
   manoIndex: 0,
@@ -91,14 +91,14 @@ export function loadGame<T>(key: keyof typeof STORAGE_KEYS, fallback: T): T {
         let players = parsed.players;
         if (!players || !Array.isArray(players) || players.length === 0) {
           players = [
-            { id: 'p1', name: 'Rodrigo' },
-            { id: 'p2', name: 'María' },
+            { id: 'p1', name: 'Jugador 1' },
+            { id: 'p2', name: 'Jugador 2' },
           ];
         } else {
           // If names are legacy 'Nosotros' or 'Ellos', replace them with clean names
           players = players.map((p: { id: string; name: string }, i: number) => {
             if (p.name === 'Nosotros' || p.name === 'Ellos') {
-              return { ...p, name: i === 0 ? 'Rodrigo' : 'María' };
+              return { ...p, name: i === 0 ? 'Jugador 1' : 'Jugador 2' };
             }
             return p;
           });

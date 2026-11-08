@@ -320,7 +320,7 @@ export const ProfilesView: React.FC<ProfilesViewProps> = ({
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Ej. Rodrigo, Mamá, Carlos..."
+                placeholder="Ej. Jugador 1, Carlos, Elena..."
                 className="w-full bg-[#0b331e] border border-amber-900/60 rounded-xl px-3 py-2.5 text-sm text-amber-100 focus:outline-none focus:border-amber-400"
                 autoFocus
                 required
