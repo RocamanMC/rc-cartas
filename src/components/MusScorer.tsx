@@ -464,23 +464,6 @@ export const MusScorer: React.FC<MusScorerProps> = ({
 
           {/* Quick Utility Chips */}
           <div className="flex items-center gap-1">
-            {/* Mano indicator toggle */}
-            <button
-              type="button"
-              onClick={() => {
-                sounds.playTap();
-                haptics.light();
-                onChange({ ...game, manoIndex: (game.manoIndex + 1) % 2 });
-              }}
-              className="flex items-center gap-1 px-2 py-1.5 rounded-xl bg-zinc-800/90 hover:bg-zinc-700 text-amber-300 font-semibold border border-amber-500/30 text-xs transition-colors cursor-pointer"
-              title="Toca para cambiar la Mano"
-            >
-              <Crown className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-              <span className="truncate max-w-[60px] font-bold">
-                {game.manoIndex === 0 ? game.pareja1.name : game.pareja2.name}
-              </span>
-            </button>
-
             {/* Undo */}
             <button
               type="button"
@@ -598,12 +581,6 @@ export const MusScorer: React.FC<MusScorerProps> = ({
                       title="Toca para cambiar nombre"
                     >
                       <span className="truncate">{game.pareja1.name}</span>
-                      {game.manoIndex === 0 && (
-                        <span
-                          className="w-2 h-2 rounded-full bg-amber-400 animate-pulse shrink-0 ring-2 ring-amber-400/30"
-                          title="Es Mano"
-                        />
-                      )}
                     </button>
                   )}
                 </div>
@@ -725,12 +702,6 @@ export const MusScorer: React.FC<MusScorerProps> = ({
                       title="Toca para cambiar nombre"
                     >
                       <span className="truncate">{game.pareja2.name}</span>
-                      {game.manoIndex === 1 && (
-                        <span
-                          className="w-2 h-2 rounded-full bg-amber-400 animate-pulse shrink-0 ring-2 ring-amber-400/30"
-                          title="Es Mano"
-                        />
-                      )}
                     </button>
                   )}
                 </div>
@@ -1008,23 +979,46 @@ export const MusScorer: React.FC<MusScorerProps> = ({
                   <p className="text-[11px] text-amber-300/80">Si nadie envida: 1 tanto al cobro (tanto de paso).</p>
                 </div>
 
-                <div className="p-2.5 bg-zinc-800/60 rounded-xl space-y-1">
-                  <strong className="text-white block text-sm">3. Pares</strong>
-                  <p>Requiere tener al menos 2 cartas del mismo valor para hablar:</p>
-                  <ul className="text-[11px] space-y-0.5 text-zinc-300">
-                    <li>• <strong>Duples:</strong> 2 parejas o póker (3 tantos).</li>
-                    <li>• <strong>Medias:</strong> trío de cartas (2 tantos).</li>
-                    <li>• <strong>Par simple:</strong> 1 pareja (1 tanto).</li>
+                <div className="p-2.5 bg-zinc-800/60 rounded-xl space-y-1.5 sm:col-span-2">
+                  <strong className="text-white block text-sm">3. Pares (Jerarquía y qué vale más)</strong>
+                  <p>
+                    Requiere al menos 2 cartas iguales. Orden de fuerza:{' '}
+                    <strong className="text-amber-300">Duples &gt; Medias (Trío) &gt; Par simple</strong>.
+                  </p>
+                  <ul className="text-[11px] space-y-1 text-zinc-300">
+                    <li>
+                      • <strong>Duples (3 tantos):</strong> 2 parejas o 4 cartas iguales (póker).{' '}
+                      <span className="text-zinc-400">
+                        Gana quien tenga la pareja alta mayor (ej. Reyes y Ases gana a Caballos y Sotas); si empatan en la alta, decide la pareja baja. El póker cuenta como dos parejas iguales (ej. 4 Caballos = Duples de Caballos).
+                      </span>
+                    </li>
+                    <li>
+                      • <strong>Medias / Trío (2 tantos):</strong> 3 cartas iguales.{' '}
+                      <span className="text-zinc-400">
+                        Vale más el trío de carta más alta: Reyes (o 3) &gt; Caballos &gt; Sotas &gt; 7 &gt; 6 &gt; 5 &gt; 4 &gt; Ases (o 2).
+                      </span>
+                    </li>
+                    <li>
+                      • <strong>Par simple (1 tanto):</strong> 1 pareja.{' '}
+                      <span className="text-zinc-400">
+                        Gana la pareja más alta (de Rey a As). Si dos jugadores empatan exactamente en la misma jugada, gana quien sea <strong>Mano</strong>.
+                      </span>
+                    </li>
                   </ul>
                 </div>
 
-                <div className="p-2.5 bg-zinc-800/60 rounded-xl space-y-1">
+                <div className="p-2.5 bg-zinc-800/60 rounded-xl space-y-1.5 sm:col-span-2">
                   <strong className="text-white block text-sm">4. Juego o Punto</strong>
-                  <p>
-                    <strong>Juego:</strong> sumar 31 o más con las 4 cartas. La mejor jugada es 31 (3 tantos), seguida de 32 (2 tantos), 40, 37, 36...
+                  <p className="text-[11px] text-zinc-400">
+                    Valor al sumar: Reyes (y 3), Caballos y Sotas valen <strong>10</strong>; Ases (y 2) valen <strong>1</strong>; el resto su número.
                   </p>
                   <p>
-                    <strong>Punto:</strong> si nadie llega a 31, gana quien más se acerque a 30 (la mejor es 30, luego 29...) y vale 1 tanto.
+                    <strong>Juego (31 o más):</strong> Orden de mejor a peor:{' '}
+                    <strong className="text-amber-300">31</strong> (3 tantos) &gt;{' '}
+                    <strong>32</strong> (2 tantos) &gt; 40 &gt; 37 &gt; 36 &gt; 35 &gt; 34 &gt; 33 (2 tantos).
+                  </p>
+                  <p>
+                    <strong>Punto (menos de 31):</strong> Si nadie tiene Juego, gana quien más se acerque a 30 (<strong>30 &gt; 29 &gt; 28...</strong>) y vale 1 tanto.
                   </p>
                 </div>
               </div>
