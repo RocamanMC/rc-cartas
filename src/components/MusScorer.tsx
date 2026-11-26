@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { MusGame, PlayerProfile } from '../types';
 import {
   RotateCcw,
-  RotateCw,
   Undo2,
   Flame,
   Settings,
   BookOpen,
-  ChevronLeft,
   ChevronRight,
   Minus,
   Plus,
@@ -37,56 +35,7 @@ export const MusScorer: React.FC<MusScorerProps> = ({
   onChange,
   onVictory,
 }) => {
-  // Current active tab defaults to 'historial' so browsing between games stays in vertical mode
-  const [activeTab, setActiveTab] = useState<MusTab>('historial');
-
-  // Mobile horizontal rotation state (defaults to true on mobile devices in portrait as requested)
-  const [isRotated, setIsRotated] = useState<boolean>(() => {
-    try {
-      const saved = localStorage.getItem('cartasrc_mus_horizontal');
-      if (saved !== null) return saved === 'true';
-    } catch {}
-    // Default to true so mobile scoreboard is horizontal by default
-    return true;
-  });
-
-  const [dimensions, setDimensions] = useState(() => ({
-    w: typeof window !== 'undefined' ? window.innerWidth : 390,
-    h: typeof window !== 'undefined' ? window.innerHeight : 844,
-  }));
-
-  const [isLandscape, setIsLandscape] = useState(() => {
-    return typeof window !== 'undefined' ? window.innerWidth > window.innerHeight : false;
-  });
-
-  useEffect(() => {
-    const handleOrientation = () => {
-      setDimensions({
-        w: window.innerWidth,
-        h: window.innerHeight,
-      });
-      setIsLandscape(window.innerWidth > window.innerHeight);
-    };
-    window.addEventListener('resize', handleOrientation);
-    window.addEventListener('orientationchange', handleOrientation);
-    return () => {
-      window.removeEventListener('resize', handleOrientation);
-      window.removeEventListener('orientationchange', handleOrientation);
-    };
-  }, []);
-
-  const toggleRotate = () => {
-    const next = !isRotated;
-    setIsRotated(next);
-    try {
-      localStorage.setItem('cartasrc_mus_horizontal', String(next));
-    } catch {}
-    sounds.playCardFlick();
-    haptics.light();
-  };
-
-  // Only apply CSS 90deg transform when in 'marcador' tab, isRotated is true, and phone is in portrait
-  const shouldApplyCssRotation = activeTab === 'marcador' && isRotated && !isLandscape;
+  const [activeTab, setActiveTab] = useState<MusTab>('marcador');
 
   // Temporary points pending for each lance in the current hand
   const [lancePots, setLancePots] = useState<Record<LanceType, number>>({
@@ -470,36 +419,28 @@ export const MusScorer: React.FC<MusScorerProps> = ({
   ];
 
   return (
-    <div
-      className={
-        shouldApplyCssRotation
-          ? 'fixed inset-0 z-50 bg-[#121417] flex items-center justify-center overflow-hidden select-none p-0'
-          : 'w-full max-w-5xl mx-auto px-0.5 sm:px-4 py-1 sm:py-4 space-y-2 sm:space-y-4 select-none'
-      }
-    >
-      <div
-        style={
-          shouldApplyCssRotation
-            ? {
-                width: `${dimensions.h}px`,
-                height: `${dimensions.w}px`,
-                maxWidth: `${dimensions.h}px`,
-                maxHeight: `${dimensions.w}px`,
-              }
-            : undefined
-        }
-        className={
-          shouldApplyCssRotation
-            ? 'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90 z-50 overflow-hidden bg-[#121417] text-white flex flex-col justify-between p-2 select-none shadow-2xl'
-            : 'w-full flex flex-col space-y-2 sm:space-y-4'
-        }
-      >
+    <div className="w-full max-w-lg mx-auto px-2 sm:px-4 py-2 sm:py-4 space-y-3 select-none">
+      <div className="w-full flex flex-col space-y-3">
         {/* ======================================================== */}
         {/* TOP TAB SWITCHER: [ 🃏 MARCADOR ] vs [ 📜 REGLAS E HISTORIAL ] */}
         {/* ======================================================== */}
         <div className="flex items-center justify-between gap-1 px-1.5 py-1.5 bg-zinc-900/95 rounded-2xl border border-zinc-800 shadow-md">
-          {/* Main 2 Tabs: Reglas e Historial FIRST, Marcador SECOND */}
           <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => {
+                sounds.playTap();
+                setActiveTab('marcador');
+              }}
+              className={`px-3 py-1.5 rounded-xl font-bold text-xs sm:text-sm transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeTab === 'marcador'
+                  ? 'bg-amber-400 text-amber-950 shadow-md ring-1 ring-amber-300'
+                  : 'text-zinc-400 hover:text-white hover:bg-zinc-800/80'
+              }`}
+            >
+              <span>🃏 Marcador</span>
+            </button>
+
             <button
               type="button"
               onClick={() => {
@@ -519,21 +460,6 @@ export const MusScorer: React.FC<MusScorerProps> = ({
                 </span>
               )}
             </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                sounds.playTap();
-                setActiveTab('marcador');
-              }}
-              className={`px-3 py-1.5 rounded-xl font-bold text-xs sm:text-sm transition-all cursor-pointer flex items-center gap-1.5 ${
-                activeTab === 'marcador'
-                  ? 'bg-amber-400 text-amber-950 shadow-md ring-1 ring-amber-300'
-                  : 'text-zinc-400 hover:text-white hover:bg-zinc-800/80'
-              }`}
-            >
-              <span>🃏 Marcador</span>
-            </button>
           </div>
 
           {/* Quick Utility Chips */}
@@ -550,21 +476,9 @@ export const MusScorer: React.FC<MusScorerProps> = ({
               title="Toca para cambiar la Mano"
             >
               <Crown className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-              <span className="hidden xs:inline">Mano:</span>
-              <span className="truncate max-w-[65px] font-bold">
+              <span className="truncate max-w-[60px] font-bold">
                 {game.manoIndex === 0 ? game.pareja1.name : game.pareja2.name}
               </span>
-            </button>
-
-            {/* Órdago */}
-            <button
-              type="button"
-              onClick={() => setOrdagoModalOpen(true)}
-              className="flex items-center gap-1 px-2 py-1.5 rounded-xl bg-red-600/95 hover:bg-red-500 text-white font-bold transition-all active:scale-95 cursor-pointer shadow-md text-xs"
-              title="Lanzar un Órdago"
-            >
-              <Flame className="w-3.5 h-3.5 text-amber-300 fill-amber-300 shrink-0" />
-              <span className="hidden sm:inline">Órdago</span>
             </button>
 
             {/* Undo */}
@@ -582,23 +496,6 @@ export const MusScorer: React.FC<MusScorerProps> = ({
               <Undo2 className="w-3.5 h-3.5" />
             </button>
 
-            {/* Rotate Horizontal / Vertical toggle */}
-            {!isLandscape && activeTab === 'marcador' && (
-              <button
-                type="button"
-                onClick={toggleRotate}
-                className={`p-1.5 px-2 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
-                  isRotated
-                    ? 'bg-amber-400 text-zinc-950 border-amber-300 shadow-md'
-                    : 'bg-zinc-800/80 text-amber-300 border-amber-500/30 hover:bg-zinc-700'
-                }`}
-                title={isRotated ? 'Girar a vertical' : 'Girar a horizontal'}
-              >
-                <RotateCw className="w-3.5 h-3.5" />
-                <span className="hidden xs:inline">{isRotated ? 'Horizontal' : 'Vertical'}</span>
-              </button>
-            )}
-
             {/* Reset button */}
             <button
               type="button"
@@ -612,356 +509,362 @@ export const MusScorer: React.FC<MusScorerProps> = ({
         </div>
 
         {/* ======================================================== */}
-        {/* PESTAÑA 1: MARCADOR SOLO EN HORIZONTAL                  */}
+        {/* PESTAÑA 1: MARCADOR VERTICAL                             */}
         {/* ======================================================== */}
         {activeTab === 'marcador' && (
-          <div className="w-full flex-1 flex flex-col justify-center space-y-1.5 sm:space-y-2">
-            {/* Main 3-Column Scoreboard Card */}
-            <div className="w-full flex-1 bg-[#16171a]/95 rounded-2xl sm:rounded-3xl border border-zinc-800/90 shadow-2xl p-2 sm:p-5 md:p-6 backdrop-blur-md flex flex-col justify-center">
-              <div className="w-full grid grid-cols-12 gap-1 sm:gap-3 items-center">
-                {/* ==================== LEFT COLUMN: EQUIPO 1 ==================== */}
-                <div className="col-span-3 sm:col-span-3 md:col-span-4 flex flex-col items-center justify-center space-y-1 sm:space-y-3">
-                  {/* Team 1 Title */}
-                  <div className="relative group text-center w-full flex flex-col items-center">
-                    {editingTeamName === 'p1' ? (
-                      <form
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          if (teamNameInput.trim()) {
-                            onChange({
-                              ...game,
-                              pareja1: { ...game.pareja1, name: teamNameInput.trim() },
-                            });
-                          }
-                          setEditingTeamName(null);
-                        }}
-                        className="flex items-center justify-center gap-1 w-full"
-                      >
-                        <input
-                          type="text"
-                          value={teamNameInput}
-                          onChange={(e) => setTeamNameInput(e.target.value)}
-                          autoFocus
-                          className="bg-zinc-800 text-white font-bold text-center px-1 py-0.5 rounded border border-sky-400 text-xs sm:text-base max-w-[85px] sm:max-w-[140px] focus:outline-none"
+          <div className="w-full flex flex-col space-y-3">
+            {/* Top 2-Column Scoreboard */}
+            <div className="grid grid-cols-2 gap-3 pt-1">
+              {/* ==================== EQUIPO A (P1) ==================== */}
+              <div className="flex flex-col items-center space-y-2">
+                {/* Vacas & Juegos dots */}
+                <div className="w-full flex items-center justify-between px-1">
+                  <div className="flex flex-col items-start gap-1">
+                    <span className="text-[11px] font-medium text-zinc-400">Vacas</span>
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: game.vacasObjetivo }).map((_, idx) => (
+                        <span
+                          key={idx}
+                          className={`w-2.5 h-2.5 rounded-sm transition-colors ${
+                            idx < game.vacasGanadasP1
+                              ? 'bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.6)]'
+                              : 'bg-zinc-800 border border-zinc-700'
+                          }`}
                         />
-                        <button
-                          type="submit"
-                          className="text-[10px] sm:text-xs bg-sky-500 text-white font-bold px-1.5 py-0.5 rounded cursor-pointer"
-                        >
-                          OK
-                        </button>
-                      </form>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setEditingTeamName('p1');
-                          setTeamNameInput(game.pareja1.name);
-                        }}
-                        className="text-xs sm:text-base md:text-xl font-black text-zinc-100 hover:text-sky-300 transition-colors flex items-center justify-center gap-1 cursor-pointer truncate max-w-full"
-                        title="Toca para cambiar nombre"
-                      >
-                        <span className="truncate">{game.pareja1.name}</span>
-                        {game.manoIndex === 0 && (
-                          <span
-                            className="w-2 h-2 rounded-full bg-amber-400 animate-pulse shrink-0 ring-2 ring-amber-400/30"
-                            title="Es Mano"
-                          />
-                        )}
-                      </button>
-                    )}
-
-                    {/* Vacas indicator */}
-                    <div className="text-[10px] sm:text-xs font-semibold text-amber-400/90 flex items-center gap-0.5 mt-0.5">
-                      <Trophy className="w-3 h-3 text-amber-400 shrink-0" />
-                      <span>
-                        {game.vacasGanadasP1} / {game.vacasObjetivo} {game.vacasObjetivo === 1 ? 'vaca' : 'vacas'}
-                      </span>
+                      ))}
                     </div>
                   </div>
 
-                  {/* Big Score Number */}
-                  <div className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white tracking-tight tabular-nums select-none drop-shadow-md leading-none py-0.5">
-                    {game.piedrasP1}
-                  </div>
-
-                  {/* Action Buttons: [-1] [+1] [+5] */}
-                  <div className="flex items-center justify-center gap-1 sm:gap-2 w-full">
-                    <button
-                      type="button"
-                      onClick={() => handleTeamPoints('p1', -1)}
-                      className="w-8 sm:w-11 h-7 sm:h-10 bg-red-600 hover:bg-red-500 active:scale-95 text-white font-black text-xs sm:text-base rounded-lg sm:rounded-xl transition-all cursor-pointer shadow-md flex items-center justify-center"
-                      title="Restar 1 piedra"
-                    >
-                      -1
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleTeamPoints('p1', 1)}
-                      className="w-8 sm:w-11 h-7 sm:h-10 bg-sky-500 hover:bg-sky-400 active:scale-95 text-white font-black text-xs sm:text-base rounded-lg sm:rounded-xl transition-all cursor-pointer shadow-md flex items-center justify-center"
-                      title="Sumar 1 piedra"
-                    >
-                      +1
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleTeamPoints('p1', 5)}
-                      className="w-8 sm:w-11 h-7 sm:h-10 bg-sky-500 hover:bg-sky-400 active:scale-95 text-white font-black text-xs sm:text-base rounded-lg sm:rounded-xl transition-all cursor-pointer shadow-md flex items-center justify-center"
-                      title="Sumar 1 amarraco (+5 piedras)"
-                    >
-                      +5
-                    </button>
-                  </div>
-
-                  {/* Bottom Stepper: [-] [ 0 ] [+] (Chicos won) */}
-                  <div className="flex flex-col items-center pt-0.5">
-                    <span className="text-[9px] xs:text-[10px] sm:text-xs font-bold text-zinc-400 uppercase tracking-wider mb-0.5">
-                      Chicos
-                    </span>
-                    <div className="flex items-center gap-1 sm:gap-2">
-                      <button
-                        type="button"
-                        onClick={() => handleChicosStep('p1', -1)}
-                        className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-zinc-300 hover:text-white active:scale-90 transition-transform cursor-pointer"
-                        title="Restar Chico manualmente"
-                      >
-                        <Minus className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5]" />
-                      </button>
-                      <div
-                        className="min-w-[28px] sm:min-w-[36px] px-1.5 py-0.5 sm:py-1 bg-white text-zinc-950 font-black text-xs sm:text-base rounded-md sm:rounded-lg shadow text-center select-none"
-                        title={`Chicos ganados por ${game.pareja1.name}`}
-                      >
-                        {game.juegosGanadosP1}
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => handleChicosStep('p1', 1)}
-                        className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-zinc-300 hover:text-white active:scale-90 transition-transform cursor-pointer"
-                        title="Sumar Chico manualmente"
-                      >
-                        <Plus className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5]" />
-                      </button>
+                  <div className="flex flex-col items-end gap-1">
+                    <span className="text-[11px] font-medium text-zinc-400">Juegos</span>
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: game.juegosPorVaca }).map((_, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() =>
+                            handleChicosStep('p1', idx < game.juegosGanadosP1 ? -1 : 1)
+                          }
+                          title="Toca para ajustar Juegos/Chicos"
+                          className={`w-2.5 h-2.5 rounded-sm transition-colors cursor-pointer ${
+                            idx < game.juegosGanadosP1
+                              ? 'bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.6)]'
+                              : 'bg-zinc-800 border border-zinc-700 hover:border-zinc-500'
+                          }`}
+                        />
+                      ))}
                     </div>
                   </div>
                 </div>
 
-                {/* ==================== CENTER COLUMN: 4 LANCES ==================== */}
-                <div className="col-span-6 sm:col-span-6 md:col-span-4 flex flex-col items-center justify-center py-0.5 sm:py-2 md:py-0 border-x border-zinc-800/90 space-y-1.5 sm:space-y-3">
-                  {lanceRows.map((lance) => {
-                    const pot = lancePots[lance.id];
-                    const isLastRow = lance.id === 'juego';
-
-                    return (
-                      <div
-                        key={lance.id}
-                        className="flex items-center justify-center gap-1 sm:gap-2 w-full max-w-[280px]"
+                {/* Team 1 Name */}
+                <div className="w-full flex justify-center">
+                  {editingTeamName === 'p1' ? (
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        if (teamNameInput.trim()) {
+                          onChange({
+                            ...game,
+                            pareja1: { ...game.pareja1, name: teamNameInput.trim() },
+                          });
+                        }
+                        setEditingTeamName(null);
+                      }}
+                      className="flex items-center justify-center gap-1 w-full"
+                    >
+                      <input
+                        type="text"
+                        value={teamNameInput}
+                        onChange={(e) => setTeamNameInput(e.target.value)}
+                        autoFocus
+                        className="bg-zinc-800 text-white font-bold text-center px-1.5 py-0.5 rounded border border-emerald-400 text-sm max-w-[110px] focus:outline-none"
+                      />
+                      <button
+                        type="submit"
+                        className="text-xs bg-emerald-600 text-white font-bold px-2 py-0.5 rounded cursor-pointer"
                       >
-                        {/* ◀ Left Arrow (awards to Team 1) */}
+                        OK
+                      </button>
+                    </form>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditingTeamName('p1');
+                        setTeamNameInput(game.pareja1.name);
+                      }}
+                      className="text-base sm:text-lg font-bold text-white hover:text-amber-300 transition-colors flex items-center justify-center gap-1.5 cursor-pointer truncate max-w-full"
+                      title="Toca para cambiar nombre"
+                    >
+                      <span className="truncate">{game.pareja1.name}</span>
+                      {game.manoIndex === 0 && (
+                        <span
+                          className="w-2 h-2 rounded-full bg-amber-400 animate-pulse shrink-0 ring-2 ring-amber-400/30"
+                          title="Es Mano"
+                        />
+                      )}
+                    </button>
+                  )}
+                </div>
+
+                {/* Big Score */}
+                <div className="text-5xl sm:text-6xl font-black text-white tracking-tight tabular-nums leading-none py-1">
+                  {game.piedrasP1}
+                </div>
+
+                {/* Action Buttons: [-1] [+1] [+5] */}
+                <div className="flex items-center justify-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => handleTeamPoints('p1', -1)}
+                    className="w-11 h-10 rounded-xl bg-red-950/70 hover:bg-red-900/80 border border-red-700/60 text-red-400 font-bold text-base active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+                    title="Restar 1 piedra"
+                  >
+                    -1
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleTeamPoints('p1', 1)}
+                    className="w-12 h-11 rounded-xl bg-emerald-950/70 hover:bg-emerald-900/80 border border-emerald-600/70 text-emerald-400 font-bold text-lg active:scale-95 transition-all cursor-pointer flex items-center justify-center shadow-md"
+                    title="Sumar 1 piedra"
+                  >
+                    +1
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleTeamPoints('p1', 5)}
+                    className="w-11 h-10 rounded-xl bg-emerald-950/70 hover:bg-emerald-900/80 border border-emerald-600/70 text-emerald-400 font-bold text-base active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+                    title="Sumar 1 amarraco (+5 piedras)"
+                  >
+                    +5
+                  </button>
+                </div>
+              </div>
+
+              {/* ==================== EQUIPO B (P2) ==================== */}
+              <div className="flex flex-col items-center space-y-2">
+                {/* Vacas & Juegos dots */}
+                <div className="w-full flex items-center justify-between px-1">
+                  <div className="flex flex-col items-start gap-1">
+                    <span className="text-[11px] font-medium text-zinc-400">Vacas</span>
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: game.vacasObjetivo }).map((_, idx) => (
+                        <span
+                          key={idx}
+                          className={`w-2.5 h-2.5 rounded-sm transition-colors ${
+                            idx < game.vacasGanadasP2
+                              ? 'bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.6)]'
+                              : 'bg-zinc-800 border border-zinc-700'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col items-end gap-1">
+                    <span className="text-[11px] font-medium text-zinc-400">Juegos</span>
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: game.juegosPorVaca }).map((_, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() =>
+                            handleChicosStep('p2', idx < game.juegosGanadosP2 ? -1 : 1)
+                          }
+                          title="Toca para ajustar Juegos/Chicos"
+                          className={`w-2.5 h-2.5 rounded-sm transition-colors cursor-pointer ${
+                            idx < game.juegosGanadosP2
+                              ? 'bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.6)]'
+                              : 'bg-zinc-800 border border-zinc-700 hover:border-zinc-500'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Team 2 Name */}
+                <div className="w-full flex justify-center">
+                  {editingTeamName === 'p2' ? (
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        if (teamNameInput.trim()) {
+                          onChange({
+                            ...game,
+                            pareja2: { ...game.pareja2, name: teamNameInput.trim() },
+                          });
+                        }
+                        setEditingTeamName(null);
+                      }}
+                      className="flex items-center justify-center gap-1 w-full"
+                    >
+                      <input
+                        type="text"
+                        value={teamNameInput}
+                        onChange={(e) => setTeamNameInput(e.target.value)}
+                        autoFocus
+                        className="bg-zinc-800 text-white font-bold text-center px-1.5 py-0.5 rounded border border-emerald-400 text-sm max-w-[110px] focus:outline-none"
+                      />
+                      <button
+                        type="submit"
+                        className="text-xs bg-emerald-600 text-white font-bold px-2 py-0.5 rounded cursor-pointer"
+                      >
+                        OK
+                      </button>
+                    </form>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditingTeamName('p2');
+                        setTeamNameInput(game.pareja2.name);
+                      }}
+                      className="text-base sm:text-lg font-bold text-white hover:text-amber-300 transition-colors flex items-center justify-center gap-1.5 cursor-pointer truncate max-w-full"
+                      title="Toca para cambiar nombre"
+                    >
+                      <span className="truncate">{game.pareja2.name}</span>
+                      {game.manoIndex === 1 && (
+                        <span
+                          className="w-2 h-2 rounded-full bg-amber-400 animate-pulse shrink-0 ring-2 ring-amber-400/30"
+                          title="Es Mano"
+                        />
+                      )}
+                    </button>
+                  )}
+                </div>
+
+                {/* Big Score */}
+                <div className="text-5xl sm:text-6xl font-black text-white tracking-tight tabular-nums leading-none py-1">
+                  {game.piedrasP2}
+                </div>
+
+                {/* Action Buttons: [-1] [+1] [+5] */}
+                <div className="flex items-center justify-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => handleTeamPoints('p2', -1)}
+                    className="w-11 h-10 rounded-xl bg-red-950/70 hover:bg-red-900/80 border border-red-700/60 text-red-400 font-bold text-base active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+                    title="Restar 1 piedra"
+                  >
+                    -1
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleTeamPoints('p2', 1)}
+                    className="w-12 h-11 rounded-xl bg-emerald-950/70 hover:bg-emerald-900/80 border border-emerald-600/70 text-emerald-400 font-bold text-lg active:scale-95 transition-all cursor-pointer flex items-center justify-center shadow-md"
+                    title="Sumar 1 piedra"
+                  >
+                    +1
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleTeamPoints('p2', 5)}
+                    className="w-11 h-10 rounded-xl bg-emerald-950/70 hover:bg-emerald-900/80 border border-emerald-600/70 text-emerald-400 font-bold text-base active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+                    title="Sumar 1 amarraco (+5 piedras)"
+                  >
+                    +5
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Center Órdago Pill Button */}
+            <div className="flex justify-center pt-1">
+              <button
+                type="button"
+                onClick={() => setOrdagoModalOpen(true)}
+                className="px-7 py-1.5 rounded-full bg-amber-900/40 hover:bg-amber-800/60 border border-amber-500/40 text-amber-300 font-bold text-sm shadow-md active:scale-95 transition-all cursor-pointer"
+                title="Lanzar un Órdago"
+              >
+                Órdago
+              </button>
+            </div>
+
+            {/* 4 Vertical Lance Cards */}
+            <div className="space-y-2.5">
+              {lanceRows.map((lance) => {
+                const pot = lancePots[lance.id];
+                const isLastRow = lance.id === 'juego';
+
+                return (
+                  <div
+                    key={lance.id}
+                    className="bg-zinc-900/90 border border-zinc-800 rounded-2xl px-3 py-3 space-y-2.5 shadow-md"
+                  >
+                    {/* Centered Lance Title */}
+                    <div className="flex items-center justify-center">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (isLastRow) {
+                            setUsePunto(!usePunto);
+                            sounds.playTap();
+                          } else if (pot > 0) {
+                            handleClearLancePot(lance.id);
+                          }
+                        }}
+                        className="text-xs sm:text-sm font-bold uppercase tracking-wider text-zinc-200 hover:text-amber-300 transition-colors cursor-pointer"
+                        title={
+                          isLastRow
+                            ? 'Toca para alternar entre Juego y Punto'
+                            : pot > 0
+                            ? 'Toca para reiniciar a 0'
+                            : lance.label
+                        }
+                      >
+                        {lance.label}
+                      </button>
+                    </div>
+
+                    {/* Controls Row: [Equipo A]  [-] 0 [+]  [Equipo B] */}
+                    <div className="flex items-center justify-between gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleAwardLance(lance.id, 'p1')}
+                        className="min-w-[88px] max-w-[115px] py-2.5 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-600/50 text-white font-semibold text-xs sm:text-sm truncate active:scale-95 transition-all cursor-pointer"
+                        title={`Asignar ${lance.label} (${pot > 0 ? pot : 1} tanto${pot > 1 ? 's' : ''}) a ${game.pareja1.name}`}
+                      >
+                        {game.pareja1.name}
+                      </button>
+
+                      <div className="flex items-center gap-2.5 sm:gap-3">
                         <button
                           type="button"
-                          onClick={() => handleAwardLance(lance.id, 'p1')}
-                          className="w-7 sm:w-8 h-7 sm:h-8 flex items-center justify-center text-white hover:text-sky-400 active:scale-75 transition-transform cursor-pointer shrink-0"
-                          title={`Asignar ${lance.label} (${pot > 0 ? pot : 1} tanto${pot > 1 ? 's' : ''}) a ${game.pareja1.name}`}
+                          onClick={() => handleAddLancePot(lance.id, -1)}
+                          className="w-11 h-10 rounded-xl bg-red-950/70 hover:bg-red-900/80 border border-red-700/60 text-red-400 flex items-center justify-center active:scale-95 transition-all cursor-pointer"
+                          title={`Restar 1 a ${lance.label}`}
                         >
-                          <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" />
+                          <Minus className="w-5 h-5 stroke-[2.5]" />
                         </button>
 
-                        {/* [+1] Button */}
+                        <span className="w-8 text-center text-2xl font-black text-white tabular-nums select-none">
+                          {pot}
+                        </span>
+
                         <button
                           type="button"
                           onClick={() => handleAddLancePot(lance.id, 1)}
-                          className="w-7 sm:w-10 h-7 sm:h-9 bg-sky-500 hover:bg-sky-400 active:scale-95 text-white font-black text-[11px] sm:text-xs rounded-md sm:rounded-xl transition-all cursor-pointer shadow flex items-center justify-center shrink-0"
-                          title={`Añadir +1 punto a ${lance.label}`}
+                          className="w-11 h-10 rounded-xl bg-emerald-950/70 hover:bg-emerald-900/80 border border-emerald-600/70 text-emerald-400 flex items-center justify-center active:scale-95 transition-all cursor-pointer"
+                          title={`Sumar 1 a ${lance.label}`}
                         >
-                          +1
-                        </button>
-
-                        {/* Center Badge: Name and Points */}
-                        <div className="relative group shrink-0">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              if (isLastRow) {
-                                setUsePunto(!usePunto);
-                                sounds.playTap();
-                              } else if (pot > 0) {
-                                handleClearLancePot(lance.id);
-                              }
-                            }}
-                            className={`min-w-[56px] sm:min-w-[76px] py-0.5 sm:py-1 px-1 bg-white text-zinc-950 rounded-md sm:rounded-lg shadow text-center cursor-pointer transition-transform active:scale-95 flex flex-col items-center justify-center ${
-                              pot > 0 ? 'ring-2 ring-sky-400 shadow-sky-500/20' : ''
-                            }`}
-                            title={
-                              isLastRow
-                                ? 'Toca para alternar entre Juego y Punto'
-                                : pot > 0
-                                ? 'Toca para reiniciar el bote a 0'
-                                : `${lance.label}`
-                            }
-                          >
-                            <span className="text-[10px] sm:text-xs font-bold leading-tight select-none">
-                              {lance.label}
-                            </span>
-                            <span
-                              className={`text-xs sm:text-sm font-black leading-tight tabular-nums select-none ${
-                                pot > 0 ? 'text-sky-600' : 'text-zinc-900'
-                              }`}
-                            >
-                              {pot}
-                            </span>
-                          </button>
-                        </div>
-
-                        {/* [+5] Button */}
-                        <button
-                          type="button"
-                          onClick={() => handleAddLancePot(lance.id, 5)}
-                          className="w-7 sm:w-10 h-7 sm:h-9 bg-sky-500 hover:bg-sky-400 active:scale-95 text-white font-black text-[11px] sm:text-xs rounded-md sm:rounded-xl transition-all cursor-pointer shadow flex items-center justify-center shrink-0"
-                          title={`Añadir +5 puntos a ${lance.label}`}
-                        >
-                          +5
-                        </button>
-
-                        {/* ▶ Right Arrow (awards to Team 2) */}
-                        <button
-                          type="button"
-                          onClick={() => handleAwardLance(lance.id, 'p2')}
-                          className="w-7 sm:w-8 h-7 sm:h-8 flex items-center justify-center text-white hover:text-sky-400 active:scale-75 transition-transform cursor-pointer shrink-0"
-                          title={`Asignar ${lance.label} (${pot > 0 ? pot : 1} tanto${pot > 1 ? 's' : ''}) a ${game.pareja2.name}`}
-                        >
-                          <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" />
+                          <Plus className="w-5 h-5 stroke-[2.5]" />
                         </button>
                       </div>
-                    );
-                  })}
-                </div>
 
-                {/* ==================== RIGHT COLUMN: EQUIPO 2 ==================== */}
-                <div className="col-span-3 sm:col-span-3 md:col-span-4 flex flex-col items-center justify-center space-y-1 sm:space-y-3">
-                  {/* Team 2 Title */}
-                  <div className="relative group text-center w-full flex flex-col items-center">
-                    {editingTeamName === 'p2' ? (
-                      <form
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          if (teamNameInput.trim()) {
-                            onChange({
-                              ...game,
-                              pareja2: { ...game.pareja2, name: teamNameInput.trim() },
-                            });
-                          }
-                          setEditingTeamName(null);
-                        }}
-                        className="flex items-center justify-center gap-1 w-full"
-                      >
-                        <input
-                          type="text"
-                          value={teamNameInput}
-                          onChange={(e) => setTeamNameInput(e.target.value)}
-                          autoFocus
-                          className="bg-zinc-800 text-white font-bold text-center px-1 py-0.5 rounded border border-sky-400 text-xs sm:text-base max-w-[85px] sm:max-w-[140px] focus:outline-none"
-                        />
-                        <button
-                          type="submit"
-                          className="text-[10px] sm:text-xs bg-sky-500 text-white font-bold px-1.5 py-0.5 rounded cursor-pointer"
-                        >
-                          OK
-                        </button>
-                      </form>
-                    ) : (
                       <button
                         type="button"
-                        onClick={() => {
-                          setEditingTeamName('p2');
-                          setTeamNameInput(game.pareja2.name);
-                        }}
-                        className="text-xs sm:text-base md:text-xl font-black text-zinc-100 hover:text-sky-300 transition-colors flex items-center justify-center gap-1 cursor-pointer truncate max-w-full"
-                        title="Toca para cambiar nombre"
+                        onClick={() => handleAwardLance(lance.id, 'p2')}
+                        className="min-w-[88px] max-w-[115px] py-2.5 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-600/50 text-white font-semibold text-xs sm:text-sm truncate active:scale-95 transition-all cursor-pointer"
+                        title={`Asignar ${lance.label} (${pot > 0 ? pot : 1} tanto${pot > 1 ? 's' : ''}) a ${game.pareja2.name}`}
                       >
-                        <span className="truncate">{game.pareja2.name}</span>
-                        {game.manoIndex === 1 && (
-                          <span
-                            className="w-2 h-2 rounded-full bg-amber-400 animate-pulse shrink-0 ring-2 ring-amber-400/30"
-                            title="Es Mano"
-                          />
-                        )}
-                      </button>
-                    )}
-
-                    {/* Vacas indicator */}
-                    <div className="text-[10px] sm:text-xs font-semibold text-amber-400/90 flex items-center gap-0.5 mt-0.5">
-                      <Trophy className="w-3 h-3 text-amber-400 shrink-0" />
-                      <span>
-                        {game.vacasGanadasP2} / {game.vacasObjetivo} {game.vacasObjetivo === 1 ? 'vaca' : 'vacas'}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Big Score Number */}
-                  <div className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white tracking-tight tabular-nums select-none drop-shadow-md leading-none py-0.5">
-                    {game.piedrasP2}
-                  </div>
-
-                  {/* Action Buttons: [-1] [+1] [+5] */}
-                  <div className="flex items-center justify-center gap-1 sm:gap-2 w-full">
-                    <button
-                      type="button"
-                      onClick={() => handleTeamPoints('p2', -1)}
-                      className="w-8 sm:w-11 h-7 sm:h-10 bg-red-600 hover:bg-red-500 active:scale-95 text-white font-black text-xs sm:text-base rounded-lg sm:rounded-xl transition-all cursor-pointer shadow-md flex items-center justify-center"
-                      title="Restar 1 piedra"
-                    >
-                      -1
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleTeamPoints('p2', 1)}
-                      className="w-8 sm:w-11 h-7 sm:h-10 bg-sky-500 hover:bg-sky-400 active:scale-95 text-white font-black text-xs sm:text-base rounded-lg sm:rounded-xl transition-all cursor-pointer shadow-md flex items-center justify-center"
-                      title="Sumar 1 piedra"
-                    >
-                      +1
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleTeamPoints('p2', 5)}
-                      className="w-8 sm:w-11 h-7 sm:h-10 bg-sky-500 hover:bg-sky-400 active:scale-95 text-white font-black text-xs sm:text-base rounded-lg sm:rounded-xl transition-all cursor-pointer shadow-md flex items-center justify-center"
-                      title="Sumar 1 amarraco (+5 piedras)"
-                    >
-                      +5
-                    </button>
-                  </div>
-
-                  {/* Bottom Stepper: [-] [ 0 ] [+] (Chicos won) */}
-                  <div className="flex flex-col items-center pt-0.5">
-                    <span className="text-[9px] xs:text-[10px] sm:text-xs font-bold text-zinc-400 uppercase tracking-wider mb-0.5">
-                      Chicos
-                    </span>
-                    <div className="flex items-center gap-1 sm:gap-2">
-                      <button
-                        type="button"
-                        onClick={() => handleChicosStep('p2', -1)}
-                        className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-zinc-300 hover:text-white active:scale-90 transition-transform cursor-pointer"
-                        title="Restar Chico manualmente"
-                      >
-                        <Minus className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5]" />
-                      </button>
-                      <div
-                        className="min-w-[28px] sm:min-w-[36px] px-1.5 py-0.5 sm:py-1 bg-white text-zinc-950 font-black text-xs sm:text-base rounded-md sm:rounded-lg shadow text-center select-none"
-                        title={`Chicos ganados por ${game.pareja2.name}`}
-                      >
-                        {game.juegosGanadosP2}
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => handleChicosStep('p2', 1)}
-                        className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-zinc-300 hover:text-white active:scale-90 transition-transform cursor-pointer"
-                        title="Sumar Chico manualmente"
-                      >
-                        <Plus className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5]" />
+                        {game.pareja2.name}
                       </button>
                     </div>
                   </div>
-                </div>
-              </div>
+                );
+              })}
             </div>
 
             {/* Quick Footer Info Bar */}
@@ -970,8 +873,8 @@ export const MusScorer: React.FC<MusScorerProps> = ({
                 Chico a <strong className="text-zinc-200">{game.tantosPorJuego} piedras</strong> • Vaca a{' '}
                 <strong className="text-zinc-200">{game.juegosPorVaca} chicos</strong>
               </span>
-              <span className="hidden sm:inline text-zinc-500">
-                Usa ◀ y ▶ para asignar el tanteo de cada lance
+              <span className="text-zinc-500">
+                Toca el equipo para asignar
               </span>
             </div>
           </div>
@@ -997,7 +900,7 @@ export const MusScorer: React.FC<MusScorerProps> = ({
                 </div>
                 <div className="text-left">
                   <div className="leading-tight font-black">Abrir Marcador de Partida</div>
-                  <div className="text-[11px] font-semibold text-amber-900/80">Pantalla horizontal para colocar el móvil en la mesa</div>
+                  <div className="text-[11px] font-semibold text-amber-900/80">Marcador vertical con lances y control rápido</div>
                 </div>
               </div>
               <div className="flex items-center gap-1 bg-amber-950/15 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold">
@@ -1021,14 +924,14 @@ export const MusScorer: React.FC<MusScorerProps> = ({
                     <strong className="text-white">Piedras o Tantos (0 a {game.tantosPorJuego}):</strong> Es el marcador grande. Se suman con los lances y amarracos.
                   </li>
                   <li>
-                    <strong className="text-amber-300">Chicos (contador inferior [-] [ 0 ] [+]):</strong> Cada vez que una pareja alcanza los {game.tantosPorJuego} tantos, gana <strong>1 Chico</strong> y las piedras se reinician automáticamente a 0 para el siguiente.
+                    <strong className="text-amber-300">Chicos / Juegos:</strong> Cada vez que una pareja alcanza los {game.tantosPorJuego} tantos, gana <strong>1 Chico</strong> y las piedras se reinician automáticamente a 0 para el siguiente.
                   </li>
                   <li>
                     <strong className="text-amber-400">Vacas:</strong> La pareja que consiga {game.juegosPorVaca} chicos gana <strong>1 Vaca</strong>.
                   </li>
                 </ul>
                 <div className="bg-zinc-900/80 p-2.5 rounded-xl border border-amber-500/30 text-xs text-amber-200/90 mt-2">
-                  💡 <strong>¿Por qué tiene botones [-] y [+]?</strong> Aunque la app suma los chicos automáticamente al llegar a {game.tantosPorJuego} piedras, estos botones te permiten <strong>corregir una jugada o empezar a anotar una partida que ya iba a medias</strong> en la taberna sin tener que pasar por todas las piedras.
+                  💡 <strong>Consejo:</strong> Puedes tocar los indicadores de <strong>Juegos</strong> en la parte superior de cada equipo para corregir un chico manualmente si la partida ya había empezado.
                 </div>
               </div>
             </div>
@@ -1054,7 +957,7 @@ export const MusScorer: React.FC<MusScorerProps> = ({
 
               {game.historialTantos.length === 0 ? (
                 <p className="text-xs text-zinc-500 py-3 text-center italic">
-                  Aún no se han anotado tantos en esta partida. Anota un lance con ◀ o ▶ en el Marcador.
+                  Aún no se han anotado tantos en esta partida. Anota un lance pulsando el equipo ganador en el Marcador.
                 </p>
               ) : (
                 <div className="divide-y divide-zinc-800 max-h-56 overflow-y-auto text-xs">
